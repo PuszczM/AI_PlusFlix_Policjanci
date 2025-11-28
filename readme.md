@@ -16,4 +16,5 @@ composer require --dev symfony/maker-bundle
 php bin/console doctrine:database:create
 
 jak jakas zmiana w bazie danych to 
-git add -f var/data.db
+ git add -f Policjanci/var/data.db
+
