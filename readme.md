@@ -1,20 +1,25 @@
-php.ini
-
-#odkomentować 
+W `php.ini` odkomentować: 
+```
 extension=pdo_sqlite
 extension=sqlite3
-
+```
 
 jak bład to :
 composer require symfony/orm-pack
 https://getcomposer.org/download/ 
 dodać do path ( mi automatycznie dodało )
 
+```
 composer require symfony/orm-pack
 composer require --dev symfony/maker-bundle
+```
 
+```
 php bin/console doctrine:database:create
+```
 
-jak jakas zmiana w bazie danych to 
- git add -f Policjanci/var/data.db
-
+Utworzenie bazy danych z danymi początkowymi:
+```
+php install_db.php
+php seed_db.php
+```
