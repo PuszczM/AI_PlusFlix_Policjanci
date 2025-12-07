@@ -46,9 +46,7 @@ CREATE TABLE movie_category (
 
 CREATE TABLE services (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    -- short_name is for indexing
     short_name VARCHAR(100) NOT NULL UNIQUE,
-    -- full_name is for display
     full_name VARCHAR(100) NOT NULL,
     logo_path VARCHAR(255)
 );

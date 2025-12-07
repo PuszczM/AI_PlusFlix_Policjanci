@@ -23,7 +23,7 @@
                 {% for movie in movies %}
                     <div class="movie-card">
                         {# POSTER PLACEHOLDER #}
-                        <img src="{{ movie.image ?? 'https://placehold.co/300x450' }}" alt="{{ movie.title }}">
+                        <img src="{{ movie.posterPath ?? 'https://placehold.co/300x450' }}" alt="{{ movie.title }}">
 
                         <div class="movie-info">
                             <h3>{{ movie.title }}</h3>
