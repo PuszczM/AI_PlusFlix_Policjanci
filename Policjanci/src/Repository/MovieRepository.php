@@ -21,7 +21,7 @@ class MovieRepository extends ServiceEntityRepository
         parent::__construct($registry, Movie::class);
     }
 
-    public function findMovies(?string $prompt, ?array $categoryNames): array
+    public function findMovies(?string $prompt, ?array $categoryNames, ?array $serviceNames): array
     {
         $queryBuilder = $this->createQueryBuilder('m');
 
@@ -33,8 +33,14 @@ class MovieRepository extends ServiceEntityRepository
 
         if ($categoryNames && count($categoryNames) > 0) {
             $queryBuilder->innerJoin('m.categories', 'c')
-                ->andWhere('c.name IN (:names)')
-                ->setParameter('names', $categoryNames);
+                ->andWhere('c.name IN (:cNames)')
+                ->setParameter('cNames', $categoryNames);
+        }
+
+        if ($serviceNames && count($serviceNames) > 0) {
+            $queryBuilder->innerJoin('m.services', 's')
+                ->andWhere('s.shortName IN (:sNames)')
+                ->setParameter('sNames', $serviceNames);
         }
 
         return $queryBuilder->getQuery()->getResult();
