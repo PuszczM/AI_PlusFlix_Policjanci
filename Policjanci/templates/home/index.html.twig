@@ -6,26 +6,27 @@
 
     <div class="container" style="padding: 20px;">
 
-        <form action="{{ path('app_home') }}" method="get" class="search-form">
-            <input type="text" name="q" class="search-input" placeholder="Tytuł filmu..." value="{{ searchTerm is defined ? searchTerm : '' }}">
-            <button type="submit" class="search-btn">🔍</button>
-        </form>
-
-        <h2 style="color: white; margin-bottom: 20px;">Polecane filmy</h2>
+        <div class="search-container">
+            <h2>Which film are you looking for?</h2>
+            <form action="{{ path('app_home') }}" method="get" class="search-form">
+                <input type="text" name="q" class="search-input" placeholder="Search..." value="{{ searchTerm is defined ? searchTerm : '' }}">
+                <button type="submit" class="search-btn">🔍</button>
+            </form>
+        </div>
 
         {% if movies is empty %}
-            <p style="color: #ccc;">Brak filmów w bazie danych.</p>
+            <p style="color: #ccc;">There are no films in our db yet :(</p>
         {% else %}
             <div class="movie-grid">
                 {% for movie in movies %}
                     <div class="movie-card">
-                        {# PLACEHOLDER NA POSTERY #}
+                        {# POSTER PLACEHOLDER #}
                         <img src="{{ movie.image ?? 'https://placehold.co/300x450' }}" alt="{{ movie.title }}">
 
                         <div class="movie-info">
                             <h3>{{ movie.title }}</h3>
                             <p>{{ movie.description|slice(0, 80) }}...</p>
-                            <a href="#" class="btn-watch">Oglądaj</a>
+                            <a href="#" class="btn-watch">Watch</a>
                         </div>
                     </div>
                 {% endfor %}
@@ -34,33 +35,6 @@
     </div>
 
     <style>
-        .search-form {
-            flex-grow: 1;
-            max-width: 400px;
-            margin: 0 20px;
-            display: flex;
-        }
-        .search-input {
-            width: 100%;
-            padding: 8px 15px;
-            background-color: #000;
-            border: 1px solid #ccc;
-            color: white;
-            font-size: 14px;
-            border-radius: 0;
-        }
-        .search-input:focus { outline: 1px solid white; }
-
-        .search-btn {
-            background-color: #333;
-            border: 1px solid #ccc;
-            border-left: none;
-            color: white;
-            cursor: pointer;
-            padding: 0 15px;
-        }
-        .search-btn:hover { background-color: #555; }
-
         .movie-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -91,5 +65,37 @@
             border-radius: 2px;
             margin-top: 10px;
         }
+
+        .search-container {
+            width: 100%;
+            max-width: 750px;
+            text-align: center;
+            margin: 0 auto 25px;
+        }
+        .search-form {
+            flex-grow: 1;
+            width: 100%;
+            margin: 0 20px;
+            display: flex;
+        }
+        .search-input {
+            width: 100%;
+            padding: 8px 15px;
+            background-color: #000;
+            border: 1px solid #ccc;
+            color: white;
+            font-size: 14px;
+            border-radius: 0;
+        }
+        .search-input:focus { outline: 1px solid white; }
+        .search-btn {
+            background-color: #333;
+            border: 1px solid #ccc;
+            border-left: none;
+            color: white;
+            cursor: pointer;
+            padding: 0 15px;
+        }
+        .search-btn:hover { background-color: #555; }
     </style>
 {% endblock %}
