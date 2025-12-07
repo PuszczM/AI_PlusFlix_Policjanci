@@ -19,9 +19,18 @@ composer require --dev doctrine/doctrine-fixtures-bundle
 php bin/console doctrine:database:create
 ```
 
-Utworzenie bazy danych z danymi początkowymi:
+Uruchomienie migracji:
 ```
-php install_db.php
+php bin/console doctrine:migrations:migrate 
+```
+
+Dodanie nowej migracji (przy zmianie encji):
+```
+php bin/console migrations:make
+```
+
+Wstawianie danych testowych:
+```
 php bin/console doctrine:fixtures:load
 ```
 
