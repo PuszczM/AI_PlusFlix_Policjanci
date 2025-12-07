@@ -25,7 +25,7 @@ class Movie
     #[ORM\Column(type: "integer")]
     private int $releaseYear;
 
-    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    #[ORM\Column(type: "string", length: 255, nullable: true, options: ["collation" => "NOCASE"])]
     private ?string $country;
 
     #[ORM\Column(type: "boolean", nullable: true)]
@@ -95,6 +95,28 @@ class Movie
         return $this;
     }
 
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(?string $country): self
+    {
+        $this->country = $country;
+        return $this;
+    }
+
+    public function isSeries(): ?bool
+    {
+        return $this->isSeries;
+    }
+
+    public function setIsSeries(?bool $isSeries): self
+    {
+        $this->isSeries = $isSeries;
+        return $this;
+    }
+
     public function getPosterPath(): ?string
     {
         return $this->posterPath;
@@ -138,7 +160,6 @@ class Movie
         if (!$this->categories->contains($category)) {
             $this->categories[] = $category;
         }
-
         return $this;
     }
 
@@ -161,7 +182,6 @@ class Movie
         if (!$this->services->contains($service)) {
             $this->services[] = $service;
         }
-
         return $this;
     }
 
