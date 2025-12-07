@@ -12,15 +12,17 @@ class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
     public function index(#[MapQueryParameter] ?string $prompt,
+                          #[MapQueryParameter] ?string $categories,
                           MovieRepository $movieRepository): Response
     {
-        $movies = [];
+        $categoryNames = $categories ? explode(',', $categories) : [];
 
-        $movies = $movieRepository->findMovies($prompt);
+        $movies = $movieRepository->findMovies($prompt, $categoryNames);
 
         return $this->render('home/index.html.twig', [
             'movies' => $movies,
             'prompt' => $prompt,
+            'categories' => $categoryNames
         ]);
     }
 }
