@@ -38,10 +38,15 @@ class Movie
     #[ORM\JoinTable(name: "movie_category")]
     private Collection $categories;
 
+    #[ORM\ManyToMany(targetEntity: "App\Entity\Service", inversedBy: "movies")]
+    #[ORM\JoinTable(name: "movie_service")]
+    private Collection $services;
+
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
         $this->categories = new ArrayCollection();
+        $this->services = new ArrayCollection();
     }
 
     // Getters and Setters
@@ -134,6 +139,29 @@ class Movie
     public function removeCategory(Category $category): self
     {
         $this->categories->removeElement($category);
+        return $this;
+    }
+
+    /**
+     * @return Collection|Service[]
+     */
+    public function getServices(): Collection
+    {
+        return $this->services;
+    }
+
+    public function addService(Service $service): self
+    {
+        if (!$this->services->contains($service)) {
+            $this->services[] = $service;
+        }
+
+        return $this;
+    }
+
+    public function removeService(Service $service): self
+    {
+        $this->services->removeElement($service);
         return $this;
     }
 }
