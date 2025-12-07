@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Filter\MovieFilter;
+use App\Filter\MovieTypeFilter;
 use App\Repository\MovieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,6 +23,7 @@ class HomeController extends AbstractController
         #[MapQueryParameter] ?string $country = null,
         #[MapQueryParameter] ?int $minScore = null,
         #[MapQueryParameter] ?int $maxScore = null,
+        #[MapQueryParameter] ?MovieTypeFilter $type = null,
         MovieRepository $movieRepository
     ): Response
     {
@@ -34,7 +36,8 @@ class HomeController extends AbstractController
             $yearAfter,
             $country,
             $minScore,
-            $maxScore
+            $maxScore,
+            $type
         );
 
         $movies = $movieRepository->findMoviesByFilter($filter);
@@ -49,7 +52,8 @@ class HomeController extends AbstractController
             'yearAfter' => $filter->yearAfter,
             'country' => $filter->country,
             'minScore' => $filter->minScore,
-            'maxScore' => $filter->maxScore
+            'maxScore' => $filter->maxScore,
+            'type' => $filter->movieType
         ]);
     }
 }

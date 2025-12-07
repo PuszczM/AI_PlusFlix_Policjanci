@@ -13,6 +13,7 @@ class MovieFilter
     public ?string $country = null;
     public ?int $minScore = null;
     public ?int $maxScore = null;
+    public ?MovieTypeFilter $movieType = null;
 
     public function __construct(
         ?string $prompt = null,
@@ -24,6 +25,7 @@ class MovieFilter
         ?string $country = null,
         ?int $minScore = null,
         ?int $maxScore = null,
+        ?MovieTypeFilter $movieType = null
     ) {
         $this->prompt = $prompt;
         $this->categories = $categories;
@@ -34,5 +36,6 @@ class MovieFilter
         $this->country = $country;
         $this->minScore = $minScore;
         $this->maxScore = $maxScore;
+        $this->movieType = $movieType;
     }
 }

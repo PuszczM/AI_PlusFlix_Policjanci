@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Movie;
 use App\Filter\MovieFilter;
+use App\Filter\MovieTypeFilter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -33,6 +34,7 @@ class MovieRepository extends ServiceEntityRepository
         $this->applyYearFilter($qb, $filter->yearAfter, $filter->yearBefore);
         $this->applyCountryFilter($qb, $filter->country);
         $this->applyScoreFilter($qb, $filter->minScore, $filter->maxScore);
+        $this->applyTypeFilter($qb, $filter->movieType);
 
         return $qb->getQuery()->getResult();
     }
@@ -115,5 +117,21 @@ class MovieRepository extends ServiceEntityRepository
                 ) <= :maxScore')
             ->setParameter('minScore', $minScore)
             ->setParameter('maxScore', $maxScore);
+    }
+
+    private function applyTypeFilter($qb, ?MovieTypeFilter $type): void
+    {
+        if ($type !== null) {
+            switch ($type) {
+                case MovieTypeFilter::FILM:
+                    $qb->andWhere('m.isSeries = :isSeries')
+                        ->setParameter('isSeries', false);
+                    break;
+                case MovieTypeFilter::SERIES:
+                    $qb->andWhere('m.isSeries = :isSeries')
+                        ->setParameter('isSeries', true);
+                    break;
+            }
+        }
     }
 }
