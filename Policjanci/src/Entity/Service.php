@@ -16,7 +16,7 @@ class Service
     #[ORM\Column(type: "integer")]
     private ?int $id = null;
 
-    #[ORM\Column(type: "string", length: 100, unique: true)]
+    #[ORM\Column(type: "string", length: 100, unique: true, options: ["collation" => "NOCASE"])]
     private string $shortName;
 
     #[ORM\Column(type: "string", length: 100)]

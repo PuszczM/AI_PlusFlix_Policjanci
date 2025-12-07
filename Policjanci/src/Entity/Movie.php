@@ -16,7 +16,7 @@ class Movie
     #[ORM\Column(type: "integer")]
     private ?int $id = null;
 
-    #[ORM\Column(type: "string", length: 255)]
+    #[ORM\Column(type: "string", length: 255, options: ["collation" => "NOCASE"])]
     private string $title;
 
     #[ORM\Column(type: "text", nullable: true)]

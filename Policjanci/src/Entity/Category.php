@@ -16,7 +16,7 @@ class Category
     #[ORM\Column(type: "integer")]
     private ?int $id = null;
 
-    #[ORM\Column(type: "string", length: 100, unique: true)]
+    #[ORM\Column(type: "string", length: 100, unique: true, options: ["collation" => "NOCASE"])]
     private string $name;
 
     #[ORM\ManyToMany(targetEntity: Movie::class, mappedBy: "categories")]
