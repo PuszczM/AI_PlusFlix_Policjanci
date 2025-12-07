@@ -23,3 +23,8 @@ Utworzenie bazy danych z danymi początkowymi:
 php install_db.php
 php seed_db.php
 ```
+
+Uruchomienie serwera:
+```
+php -d max_execution_time=300 -S 127.0.0.1:8005 -t public
+```
