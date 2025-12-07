@@ -21,7 +21,7 @@ class MovieRepository extends ServiceEntityRepository
         parent::__construct($registry, Movie::class);
     }
 
-    public function findMovies(?string $prompt, ?array $categoryNames, ?array $serviceNames): array
+    public function findMovies(?string $prompt, ?array $categoryNames, ?array $serviceNames, ?bool $isRated18, ?int $year): array
     {
         $queryBuilder = $this->createQueryBuilder('m');
 
@@ -31,16 +31,28 @@ class MovieRepository extends ServiceEntityRepository
                 ->setParameter('val', '%' . $prompt . '%');
         }
 
-        if ($categoryNames && count($categoryNames) > 0) {
+        if (!empty($categoryNames)) {
             $queryBuilder->innerJoin('m.categories', 'c')
                 ->andWhere('c.name IN (:cNames)')
                 ->setParameter('cNames', $categoryNames);
         }
 
-        if ($serviceNames && count($serviceNames) > 0) {
+        if (!empty($serviceNames)) {
             $queryBuilder->innerJoin('m.services', 's')
                 ->andWhere('s.shortName IN (:sNames)')
                 ->setParameter('sNames', $serviceNames);
+        }
+
+        if ($isRated18 !== null) {
+            $queryBuilder = $queryBuilder
+                ->andWhere('m.isAdult = :isRated18')
+                ->setParameter('isRated18', $isRated18);
+        }
+
+        if ($year !== null) {
+            $queryBuilder = $queryBuilder
+                ->andWhere('m.releaseYear = :year')
+                ->setParameter('year', $year);
         }
 
         return $queryBuilder->getQuery()->getResult();
