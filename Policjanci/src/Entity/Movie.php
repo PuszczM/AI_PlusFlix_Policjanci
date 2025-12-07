@@ -26,9 +26,15 @@ class Movie
     private int $releaseYear;
 
     #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $country;
+
+    #[ORM\Column(type: "boolean", nullable: true)]
+    private ?bool $isSeries = false;
+
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
     private ?string $posterPath = null;
 
-    #[ORM\Column(type: "boolean")]
+    #[ORM\Column(type: "boolean", nullable: true)]
     private bool $isAdult = false;
 
     #[ORM\OneToMany(mappedBy: "movie", targetEntity: "App\Entity\Review", cascade: ["remove"])]
