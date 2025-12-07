@@ -5,12 +5,16 @@ DELETE FROM movie_category;
 DELETE FROM movies;
 DELETE FROM categories;
 DELETE FROM users;
+DELETE FROM services;
+DELETE FROM movie_service;
 
 DELETE FROM sqlite_sequence WHERE name='reviews';
 DELETE FROM sqlite_sequence WHERE name='movie_category';
 DELETE FROM sqlite_sequence WHERE name='movies';
 DELETE FROM sqlite_sequence WHERE name='categories';
 DELETE FROM sqlite_sequence WHERE name='users';
+DELETE FROM sqlite_sequence WHERE name='services';
+DELETE FROM sqlite_sequence WHERE name='movie_service';
 
 PRAGMA foreign_keys = ON;
 
@@ -151,3 +155,75 @@ INSERT INTO reviews (movie_id, is_positive, comment) VALUES
 
 INSERT INTO users (id, username, password, roles)
 VALUES (NULL, 'admin', '$2y$10$bgac6DAFHPSbhXfYFwqcheLCc3RYGvV8Z7PGzoPFx/KzCGY02J0NK', '["ROLE_ADMIN"]');
+
+INSERT INTO services (short_name, full_name, logo_path) VALUES
+   ('apple', 'Apple TV+', "/img/service/apple.png"),
+   ('disney', 'Disney Plus', "/img/service/disney.png"),
+   ('hbo', 'HBO Max', "/img/service/hbo.png"),
+   ('netflix', 'Netflix', "/img/service/netflix.png"),
+   ('prime', 'Prime Video', "/img/service/prime.png"),
+   ('skyshowtime', 'SkyShowtime', "/img/service/skyshowtime.png");
+
+-- The Human Centipede
+INSERT INTO movie_service (movie_id, service_id) VALUES
+    ((SELECT id FROM movies WHERE title='The Human Centipede'),
+    (SELECT id FROM services WHERE short_name='hbo'));
+
+-- Breaking Bad
+INSERT INTO movie_service (movie_id, service_id) VALUES
+    ((SELECT id FROM movies WHERE title='Breaking Bad'),
+    (SELECT id FROM services WHERE short_name='netflix'));
+
+-- Better Call Saul
+INSERT INTO movie_service (movie_id, service_id) VALUES
+    ((SELECT id FROM movies WHERE title='Better Call Saul'),
+    (SELECT id FROM services WHERE short_name='netflix')),
+    ((SELECT id FROM movies WHERE title='Better Call Saul'),
+    (SELECT id FROM services WHERE short_name='prime'));
+
+-- Inception
+INSERT INTO movie_service (movie_id, service_id) VALUES
+    ((SELECT id FROM movies WHERE title='Inception'),
+    (SELECT id FROM services WHERE short_name='apple')),
+    ((SELECT id FROM movies WHERE title='Inception'),
+    (SELECT id FROM services WHERE short_name='prime'));
+
+-- The Dark Knight
+INSERT INTO movie_service (movie_id, service_id) VALUES
+    ((SELECT id FROM movies WHERE title='The Dark Knight'),
+    (SELECT id FROM services WHERE short_name='hbo')),
+    ((SELECT id FROM movies WHERE title='The Dark Knight'),
+    (SELECT id FROM services WHERE short_name='apple'));
+
+-- Interstellar
+INSERT INTO movie_service (movie_id, service_id) VALUES
+    ((SELECT id FROM movies WHERE title='Interstellar'),
+    (SELECT id FROM services WHERE short_name='prime')),
+    ((SELECT id FROM movies WHERE title='Interstellar'),
+    (SELECT id FROM services WHERE short_name='skyshowtime'));
+
+-- The Matrix
+INSERT INTO movie_service (movie_id, service_id) VALUES
+    ((SELECT id FROM movies WHERE title='The Matrix'),
+    (SELECT id FROM services WHERE short_name='hbo')),
+    ((SELECT id FROM movies WHERE title='The Matrix'),
+    (SELECT id FROM services WHERE short_name='prime'));
+
+-- Pulp Fiction
+INSERT INTO movie_service (movie_id, service_id) VALUES
+     ((SELECT id FROM movies WHERE title='Pulp Fiction'),
+      (SELECT id FROM services WHERE short_name='prime')),
+     ((SELECT id FROM movies WHERE title='Pulp Fiction'),
+      (SELECT id FROM services WHERE short_name='hbo'));
+
+-- The Shawshank Redemption
+INSERT INTO movie_service (movie_id, service_id) VALUES
+    ((SELECT id FROM movies WHERE title='The Shawshank Redemption'),
+    (SELECT id FROM services WHERE short_name='netflix')),
+    ((SELECT id FROM movies WHERE title='The Shawshank Redemption'),
+    (SELECT id FROM services WHERE short_name='prime'));
+
+-- Stranger Things
+INSERT INTO movie_service (movie_id, service_id) VALUES
+    ((SELECT id FROM movies WHERE title='Stranger Things'),
+     (SELECT id FROM services WHERE short_name='netflix'));
