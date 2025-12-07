@@ -25,8 +25,7 @@ class Service
     #[ORM\Column(type: "string", length: 255, nullable: true)]
     private ?string $logoPath = null;
 
-    #[ORM\ManyToMany(targetEntity: Movie::class)]
-    #[ORM\JoinTable(name: "movie_service")]
+    #[ORM\ManyToMany(targetEntity: Movie::class, mappedBy: "services")]
     private Collection $movies;
 
     public function __construct()
