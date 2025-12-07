@@ -9,13 +9,15 @@
         <div class="search-container">
             <h2>Which film are you looking for?</h2>
             <form action="{{ path('app_home') }}" method="get" class="search-form">
-                <input type="text" name="q" class="search-input" placeholder="Search..." value="{{ searchTerm is defined ? searchTerm : '' }}">
+                <input type="text" name="prompt" class="search-input" placeholder="Search..." value="{{ prompt is defined ? prompt : '' }}">
                 <button type="submit" class="search-btn">🔍</button>
             </form>
         </div>
 
         {% if movies is empty %}
-            <p style="color: #ccc;">There are no films in our db yet :(</p>
+            <div class="not-found">
+                Could not find films :(
+            </div>
         {% else %}
             <div class="movie-grid">
                 {% for movie in movies %}
@@ -97,5 +99,10 @@
             padding: 0 15px;
         }
         .search-btn:hover { background-color: #555; }
+
+        .not-found {
+            color: #ccc;
+            text-align: center;
+        }
     </style>
 {% endblock %}
