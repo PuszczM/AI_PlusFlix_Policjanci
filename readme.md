@@ -12,6 +12,7 @@ dodać do path ( mi automatycznie dodało )
 ```
 composer require symfony/orm-pack
 composer require --dev symfony/maker-bundle
+composer require --dev doctrine/doctrine-fixtures-bundle
 ```
 
 ```
@@ -21,7 +22,7 @@ php bin/console doctrine:database:create
 Utworzenie bazy danych z danymi początkowymi:
 ```
 php install_db.php
-php seed_db.php
+php bin/console doctrine:fixtures:load
 ```
 
 Uruchomienie serwera:
