@@ -30,7 +30,9 @@ class MovieRepository extends ServiceEntityRepository
         $this->applyCategoryFilter($qb, $filter->categories);
         $this->applyServiceFilter($qb, $filter->services);
         $this->applyAdultFilter($qb, $filter->isRated18);
-        $this->applyYearFilter($qb, $filter->year);
+        $this->applyYearFilter($qb, $filter->yearAfter, $filter->yearBefore);
+        $this->applyCountryFilter($qb, $filter->country);
+        $this->applyScoreFilter($qb, $filter->minScore, $filter->maxScore);
 
         return $qb->getQuery()->getResult();
     }
@@ -69,11 +71,49 @@ class MovieRepository extends ServiceEntityRepository
         }
     }
 
-    private function applyYearFilter($qb, ?int $year): void
+    private function applyYearFilter($qb, ?int $yearAfter, ?int $yearBefore): void
     {
-        if ($year !== null) {
-            $qb->andWhere('m.releaseYear = :year')
-                ->setParameter('year', $year);
+        if ($yearAfter !== null) {
+            $qb->andWhere('m.releaseYear >= :yearAfter')
+                ->setParameter('yearAfter', $yearAfter);
         }
+        if ($yearBefore !== null) {
+            $qb->andWhere('m.releaseYear <= :yearBefore')
+                ->setParameter('yearBefore', $yearBefore);
+        }
+    }
+
+    private function applyCountryFilter($qb, ?string $country): void
+    {
+        if ($country !== null) {
+            $qb->andWhere('m.country = :country')
+                ->setParameter('country', $country);
+        }
+    }
+
+    // TODO: cache reviews somewhere to improve performance (e.g. in database as a column)
+    private function applyScoreFilter($qb, ?int $minScore, ?int $maxScore): void
+    {
+        if ($minScore === null && $maxScore === null) {
+            return;
+        }
+
+        $minScore = $minScore ?? 0;
+        $maxScore = $maxScore ?? 100;
+
+
+        $qb->leftJoin('m.reviews', 'r')
+            ->groupBy('m.id');
+
+        $qb->having('(
+                (SUM(CASE WHEN r.isPositive = 1 THEN 1 ELSE 0 END) * 100.0) /
+                CASE WHEN COUNT(r.id) = 0 THEN 1 ELSE COUNT(r.id) END
+                ) >= :minScore')
+            ->andHaving('(
+                (SUM(CASE WHEN r.isPositive = 1 THEN 1 ELSE 0 END) * 100.0) /
+                CASE WHEN COUNT(r.id) = 0 THEN 1 ELSE COUNT(r.id) END
+                ) <= :maxScore')
+            ->setParameter('minScore', $minScore)
+            ->setParameter('maxScore', $maxScore);
     }
 }
