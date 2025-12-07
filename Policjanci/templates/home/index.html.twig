@@ -21,9 +21,11 @@
         {% else %}
             <div class="movie-grid">
                 {% for movie in movies %}
-                    <div class="movie-card">
-                        {# POSTER PLACEHOLDER #}
-                        <img src="{{ movie.image ?? 'https://placehold.co/300x450' }}" alt="{{ movie.title }}">
+                    <div class="movie-card" data-id="{{ movie.id }}">
+                        <div class="poster-container">
+                            <img src="{{ movie.image ?? 'https://placehold.co/300x450' }}" alt="{{ movie.title }}">
+                            <div class="heart" data-id="{{ movie.id }}"></div>
+                        </div>
 
                         <div class="movie-info">
                             <h3>{{ movie.title }}</h3>
@@ -47,12 +49,31 @@
             border-radius: 4px;
             overflow: hidden;
             transition: transform 0.3s;
+            position: relative;
         }
-        .movie-card:hover { transform: scale(1.05); cursor: pointer; }
         .movie-card img {
             width: 100%;
             height: 300px;
             object-fit: cover;
+        }
+        .poster-container {
+            position: relative;
+        }
+        .heart {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            user-select: none;
+        }
+        .heart:hover { transform: scale(1.2); }
+        .heart.favorited::after {
+            content: '❤️';
+        }
+        .heart.not-favorited::after {
+            content: '🤍';
         }
         .movie-info { padding: 10px; }
         .movie-info h3 { margin: 0 0 10px 0; font-size: 1.1rem; }
@@ -100,9 +121,50 @@
         }
         .search-btn:hover { background-color: #555; }
 
-        .not-found {
-            color: #ccc;
-            text-align: center;
-        }
+        .not-found { color: #ccc; text-align: center; }
     </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const hearts = document.querySelectorAll('.heart');
+
+            function getFavorites() {
+                return JSON.parse(localStorage.getItem('favorites') || '[]');
+            }
+
+            function saveFavorites(favs) {
+                localStorage.setItem('favorites', JSON.stringify(favs));
+            }
+
+            function toggleFavorite(id, heart) {
+                let favs = getFavorites();
+                if (favs.includes(id)) {
+                    favs = favs.filter(f => f !== id);
+                    heart.classList.remove('favorited');
+                    heart.classList.add('not-favorited');
+                } else {
+                    favs.push(id);
+                    heart.classList.add('favorited');
+                    heart.classList.remove('not-favorited');
+                }
+                saveFavorites(favs);
+            }
+
+            hearts.forEach(heart => {
+                const movieId = heart.dataset.id;
+                const favs = getFavorites();
+                if (favs.includes(movieId)) {
+                    heart.classList.add('favorited');
+                } else {
+                    heart.classList.add('not-favorited');
+                }
+
+                heart.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleFavorite(movieId, heart);
+                });
+            });
+        });
+    </script>
+
 {% endblock %}
