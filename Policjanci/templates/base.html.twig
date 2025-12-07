@@ -3,20 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}PlusFlix{% endblock %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    {% block stylesheets %}
-    {% endblock %}
-
-    {% block javascripts %}
-    {% endblock %}
-
     <style>
-        /* --- GLÓWNE STYLE --- */
-        body { margin: 0; padding: 0; background-color: #141414; color: white; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+        body { margin: 0; padding: 0; background-color: #141414; color: white; font-family: sans-serif; }
         a { text-decoration: none; color: inherit; }
 
-        /* --- NAVBAR (PASEK NAWIGACJI) --- */
         .navbar {
             background-color: #000;
             padding: 15px 30px;
@@ -29,127 +19,45 @@
             z-index: 100;
         }
 
-        .brand {
-            color: #e50914;
-            font-size: 28px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            margin-right: 20px;
+        .brand { color: #e50914; font-size: 28px; font-weight: bold; letter-spacing: 1px; }
+
+        .user-menu { display: flex; align-items: center; gap: 15px; }
+        .user-info { color: #ccc; font-size: 0.9em; display: none; }
+
+        @media(min-width: 768px) {
+            .user-info { display: inline; }
         }
 
-        /* --- WYSZUKIWARKA --- */
-        .search-container {
-            flex-grow: 1;
-            display: flex;
-            justify-content: center;
-        }
-        .search-form {
-            display: flex;
-            width: 100%;
-            max-width: 400px;
-        }
-        .search-input {
-            width: 100%;
-            padding: 8px 15px;
-            background-color: #1a1a1a;
-            border: 1px solid #333;
-            color: white;
-            border-radius: 0;
-        }
-        .search-btn {
-            background-color: #333;
-            border: 1px solid #333;
-            color: white;
-            padding: 0 15px;
-            cursor: pointer;
-        }
-        .search-btn:hover { background-color: #555; }
-
-        /* --- MENU UŻYTKOWNIKA (PRAWA STRONA) --- */
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .welcome-text {
-            color: #ccc;
-            font-size: 0.9em;
-            margin-right: 10px;
-        }
-        .welcome-text strong { color: white; }
-
-        /* PRZYCISKI */
-        .btn {
-            padding: 8px 15px;
-            border-radius: 4px;
-            font-size: 0.9em;
-            font-weight: bold;
-            transition: 0.3s;
-            cursor: pointer;
-        }
-
-        .btn-login {
-            background-color: #e50914;
-            color: white;
-            border: none;
-        }
-        .btn-login:hover { background-color: #f40612; }
-
-        .btn-logout {
-            background-color: transparent;
-            border: 1px solid #666;
-            color: #ccc;
-        }
-        .btn-logout:hover { border-color: white; color: white; }
-
-        .btn-admin {
-            background-color: #b20710; /* Ciemniejszy czerwony */
-            color: white;
-            border: none;
-        }
+        .btn { padding: 8px 15px; border-radius: 4px; font-size: 0.9em; transition: background 0.3s; cursor: pointer; }
+        .btn-login { background-color: #e50914; color: white; }
+        .btn-logout { border: 1px solid #666; color: #ccc; }
+        .btn-admin { background-color: #b20710; color: white; border: 1px solid #e50914; font-weight: bold; }
         .btn-admin:hover { background-color: #e50914; }
-
     </style>
 </head>
 <body>
-
 <nav class="navbar">
     <a href="{{ path('app_home') }}" class="brand">PLUSFLIX</a>
 
-    <div class="search-container">
-        <form action="{{ path('app_home') }}" method="get" class="search-form">
-            <input type="text" name="q" class="search-input" placeholder="Szukaj filmów..." value="{{ searchTerm is defined ? searchTerm : '' }}">
-            <button type="submit" class="search-btn">🔍</button>
-        </form>
-    </div>
-
     <div class="user-menu">
+        {% if app.session.get('user_id') %}
+            <span class="user-info">Witaj, <strong>{{ app.session.get('username') }}</strong></span>
 
-        {% if app.user %}
-            <span class="welcome-text">Welcom, <strong>{{ app.user.userIdentifier }}</strong></span>
-
-            {# Przycisk tylko dla Administratora #}
-            {% if is_granted('ROLE_ADMIN') %}
-                <a href="#" class="btn btn-admin">PANEL ADMINA</a>
+            {% if 'ROLE_ADMIN' in app.session.get('roles') %}
+                <a href="#" class="btn btn-admin">ADMIN</a>
             {% endif %}
 
-            <a href="{{ path('app_logout') }}" class="btn btn-logout">Log out</a>
-
+            <a href="{{ path('app_logout') }}" class="btn btn-logout">Wyloguj</a>
         {% else %}
-            <a href="{{ path('app_login') }}" class="btn btn-login">Log in</a>
+            <a href="{{ path('app_login') }}" class="btn btn-login">Zaloguj się</a>
         {% endif %}
-
     </div>
 </nav>
 
 {% for message in app.flashes('success') %}
-    <div style="background: #2e7d32; color: white; padding: 10px; text-align: center;">
-        {{ message }}
-    </div>
+    <div style="background: #2e7d32; color: white; padding: 10px; text-align: center;">{{ message }}</div>
 {% endfor %}
 
 {% block body %}{% endblock %}
-
 </body>
 </html>
