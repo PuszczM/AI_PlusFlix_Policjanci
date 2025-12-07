@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Strona Główna - PlusFlix{% endblock %}
+
+{% block body %}
+    <div class="container" style="padding: 20px;">
+        <h2 style="color: white; margin-bottom: 20px;">Polecane filmy</h2>
+
+        {% if movies is empty %}
+            <p style="color: #ccc;">Brak filmów w bazie danych.</p>
+        {% else %}
+            <div class="movie-grid">
+                {% for movie in movies %}
+                    <div class="movie-card">
+                        {# PLACEHOLDER NA POSTERY #}
+                        <img src="{{ movie.image ?? 'https://placehold.co/300x450' }}" alt="{{ movie.title }}">
+
+                        <div class="movie-info">
+                            <h3>{{ movie.title }}</h3>
+                            <p>{{ movie.description|slice(0, 80) }}...</p>
+                            <a href="#" class="btn-watch">Oglądaj</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <style>
+        body { background-color: #141414; color: white; font-family: sans-serif; }
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .movie-card {
+            background: #1f1f1f;
+            border-radius: 4px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        .movie-card:hover { transform: scale(1.05); cursor: pointer; }
+        .movie-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+        .movie-info { padding: 10px; }
+        .movie-info h3 { margin: 0 0 10px 0; font-size: 1.1rem; }
+        .movie-info p { font-size: 0.8rem; color: #aaa; }
+        .btn-watch {
+            display: block;
+            background-color: #e50914;
+            color: white;
+            text-align: center;
+            padding: 5px;
+            text-decoration: none;
+            border-radius: 2px;
+            margin-top: 10px;
+        }
+    </style>
+{% endblock %}

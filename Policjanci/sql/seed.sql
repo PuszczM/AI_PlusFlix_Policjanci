@@ -148,3 +148,6 @@ INSERT INTO reviews (movie_id, is_positive, comment) VALUES
     'I wish I could uninstall this movie from my brain'),
     ((SELECT id FROM movies WHERE title='The Human Centipede'), 0,
     'Woke');
+
+INSERT INTO users (id, username, password, roles)
+VALUES (NULL, 'admin', '$2y$10$bgac6DAFHPSbhXfYFwqcheLCc3RYGvV8Z7PGzoPFx/KzCGY02J0NK', '["ROLE_ADMIN"]');
