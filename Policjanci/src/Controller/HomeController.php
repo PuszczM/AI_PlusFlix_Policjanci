@@ -13,11 +13,15 @@ class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
     public function index(
-        #[MapQueryParameter] ?string $prompt,
+        #[MapQueryParameter] ?string $prompt = null,
         #[MapQueryParameter] ?string $categories,
         #[MapQueryParameter] ?string $services,
-        #[MapQueryParameter] ?bool $isRated18,
-        #[MapQueryParameter] ?int $year,
+        #[MapQueryParameter] ?bool $isRated18 = null,
+        #[MapQueryParameter] ?int $yearAfter = null,
+        #[MapQueryParameter] ?int $yearBefore = null,
+        #[MapQueryParameter] ?string $country = null,
+        #[MapQueryParameter] ?int $minScore = null,
+        #[MapQueryParameter] ?int $maxScore = null,
         MovieRepository $movieRepository
     ): Response
     {
@@ -26,7 +30,11 @@ class HomeController extends AbstractController
             $categories ? array_map('trim', explode(',', $categories)) : [],
             $services ? array_map('trim', explode(',', $services)) : [],
             $isRated18,
-            $year
+            $yearBefore,
+            $yearAfter,
+            $country,
+            $minScore,
+            $maxScore
         );
 
         $movies = $movieRepository->findMoviesByFilter($filter);
@@ -37,7 +45,11 @@ class HomeController extends AbstractController
             'categories' => $filter->categories,
             'services' => $filter->services,
             'isRated18' => $filter->isRated18,
-            'year' => $filter->year,
+            'yearBefore' => $filter->yearBefore,
+            'yearAfter' => $filter->yearAfter,
+            'country' => $filter->country,
+            'minScore' => $filter->minScore,
+            'maxScore' => $filter->maxScore
         ]);
     }
 }
