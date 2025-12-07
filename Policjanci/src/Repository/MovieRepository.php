@@ -21,16 +21,22 @@ class MovieRepository extends ServiceEntityRepository
         parent::__construct($registry, Movie::class);
     }
 
-    public function findMovies(?string $prompt): array
+    public function findMovies(?string $prompt, ?array $categoryNames): array
     {
-        $query = $this->createQueryBuilder('m');
+        $queryBuilder = $this->createQueryBuilder('m');
 
         if ($prompt) {
-            $query = $query
+            $queryBuilder = $queryBuilder
                 ->andWhere('m.title LIKE :val')
                 ->setParameter('val', '%' . $prompt . '%');
         }
 
-        return $query->getQuery()->getResult();
+        if ($categoryNames && count($categoryNames) > 0) {
+            $queryBuilder->innerJoin('m.categories', 'c')
+                ->andWhere('c.name IN (:names)')
+                ->setParameter('names', $categoryNames);
+        }
+
+        return $queryBuilder->getQuery()->getResult();
     }
 }
