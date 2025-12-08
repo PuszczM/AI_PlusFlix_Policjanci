@@ -78,6 +78,12 @@ class Review
         return $this->createdAt;
     }
 
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+
     public function getUsername(): ?string
     {
         return $this->username;
