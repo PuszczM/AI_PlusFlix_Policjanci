@@ -92,4 +92,5 @@ class Service
         $this->movies->removeElement($movie);
         return $this;
     }
+    
 }

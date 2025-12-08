@@ -33,6 +33,22 @@
         .btn-logout { border: 1px solid #666; color: #ccc; }
         .btn-admin { background-color: #b20710; color: white; border: 1px solid #e50914; font-weight: bold; }
         .btn-admin:hover { background-color: #e50914; }
+        
+        .quick-btn {
+            background-color: #2d2d2d;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 4px;
+            border: 1px solid #444;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .quick-btn:hover {
+            background-color: #444;
+        }
+
     </style>
 </head>
 <body>
@@ -40,6 +56,9 @@
     <a href="{{ path('app_home') }}" class="brand">PLUSFLIX</a>
 
     <div class="user-menu">
+        <a href="#" class="btn quick-btn">🔥 Popularne</a>
+        <a href="#" class="btn quick-btn">🆕 Nowe</a>
+
         {% if app.session.get('user_id') %}
             <span class="user-info">Witaj, <strong>{{ app.session.get('username') }}</strong></span>
 

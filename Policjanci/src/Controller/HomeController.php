@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Filter\MovieFilter;
 use App\Filter\MovieTypeFilter;
 use App\Repository\MovieRepository;
+use App\Repository\CategoryRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
@@ -23,28 +24,31 @@ class HomeController extends AbstractController
         #[MapQueryParameter] ?string $country = null,
         #[MapQueryParameter] ?int $minScore = null,
         #[MapQueryParameter] ?int $maxScore = null,
-        #[MapQueryParameter] ?MovieTypeFilter $type = null,
+        #[MapQueryParameter] ?string $type = null,
         MovieRepository $movieRepository
     ): Response
     {
+        // 🔥 tłumaczenie stringa "film" / "series" -> enum
+        $movieType = $type ? MovieTypeFilter::from($type) : null;
+
         $filter = new MovieFilter(
             $prompt,
             $categories ? array_map('trim', explode(',', $categories)) : [],
             $services ? array_map('trim', explode(',', $services)) : [],
             $isRated18,
-            $yearBefore,
             $yearAfter,
+            $yearBefore,
             $country,
             $minScore,
             $maxScore,
-            $type
+            $movieType
         );
 
         $movies = $movieRepository->findMoviesByFilter($filter);
 
         return $this->render('home/index.html.twig', [
             'movies' => $movies,
-            'prompt' => $filter->prompt,
+            'prompt' => $prompt,
             'categories' => $filter->categories,
             'services' => $filter->services,
             'isRated18' => $filter->isRated18,
@@ -53,7 +57,57 @@ class HomeController extends AbstractController
             'country' => $filter->country,
             'minScore' => $filter->minScore,
             'maxScore' => $filter->maxScore,
-            'type' => $filter->movieType
+            'type' => $type,
         ]);
     }
+
+    #[Route('/search', name: 'app_search')]
+    public function search(
+        #[MapQueryParameter] ?string $prompt = null,
+        #[MapQueryParameter] ?string $categories,
+        #[MapQueryParameter] ?string $services,
+        #[MapQueryParameter] ?bool $isRated18 = null,
+        #[MapQueryParameter] ?int $yearAfter = null,
+        #[MapQueryParameter] ?int $yearBefore = null,
+        #[MapQueryParameter] ?string $country = null,
+        #[MapQueryParameter] ?int $minScore = null,
+        #[MapQueryParameter] ?int $maxScore = null,
+        #[MapQueryParameter] ?MovieTypeFilter $type = null,
+        MovieRepository $movieRepository,
+        CategoryRepository $categoryRepository
+    ): Response
+    {
+        $filter = new MovieFilter(
+            $prompt,
+            $categories ? array_map('trim', explode(',', $categories)) : [],
+            $services ? array_map('trim', explode(',', $services)) : [],
+            $isRated18,
+            $yearAfter,
+            $yearBefore,
+            $country,
+            $minScore,
+            $maxScore,
+            $type
+        );
+
+        return $this->render('movie/search.html.twig', [
+            'movies'            => $movieRepository->findMoviesByFilter($filter),
+            'prompt'            => $prompt,
+            'categories'        => $categoryRepository->findAll(),
+            'selectedCategories'=> $filter->categories,
+
+            'services'          => $filter->services,
+            'isRated18'         => $filter->isRated18,
+            'yearAfter'         => $filter->yearAfter,
+            'yearBefore'        => $filter->yearBefore,
+            'country'           => $filter->country,
+            'minScore'          => $filter->minScore,
+            'maxScore'          => $filter->maxScore,
+
+            // 🔥 always string for Twig
+            'type'              => $filter->movieType?->value,
+        ]);
+    }
+
+
 }

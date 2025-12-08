@@ -1,170 +1,126 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Strona Główna - PlusFlix{% endblock %}
+{% block title %}PlusFlix – Szukaj{% endblock %}
 
 {% block body %}
 
-    <div class="container" style="padding: 20px;">
+<div class="home-wrapper">
 
-        <div class="search-container">
-            <h2>Which film are you looking for?</h2>
-            <form action="{{ path('app_home') }}" method="get" class="search-form">
-                <input type="text" name="prompt" class="search-input" placeholder="Search..." value="{{ prompt is defined ? prompt : '' }}">
-                <button type="submit" class="search-btn">🔍</button>
-            </form>
+    <!-- GŁÓWNY TYTUŁ -->
+    <h1 class="home-title">Jakiego filmu szukasz?</h1>
+
+    <!-- FORMULARZ WYSZUKIWANIA -->
+    <form action="{{ path('app_search') }}" method="get" class="search-form">
+        <input type="text" name="prompt" placeholder="Wyszukaj..." class="search-input">
+        <button class="search-btn">🔍</button>
+    </form>
+
+    <!-- SERWISY -->
+    <div class="service-label">Serwisy</div>
+
+    <div class="service-icons">
+        
+        <div class="service-item">
+            <img src="/apple.png" alt="Apple TV">
+            <span>Apple TV</span>
         </div>
 
-        {% if movies is empty %}
-            <div class="not-found">
-                Could not find films :(
-            </div>
-        {% else %}
-            <div class="movie-grid">
-                {% for movie in movies %}
-                    <div class="movie-card" data-id="{{ movie.id }}">
-                        <div class="poster-container">
-                            <img src="{{ movie.image ?? 'https://placehold.co/300x450' }}" alt="{{ movie.title }}">
-                            <div class="heart" data-id="{{ movie.id }}"></div>
-                        </div>
+        <div class="service-item">
+            <img src="/Netflix_Symbol_RGB.png" alt="Netflix">
+            <span>Netflix</span>
+        </div>
 
-                        <div class="movie-info">
-                            <h3>{{ movie.title }}</h3>
-                            <p>{{ movie.description|slice(0, 80) }}...</p>
-                            <a href="#" class="btn-watch">Watch</a>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+        <div class="service-item">
+            <img src="/hbo-max-logo.jpg" alt="HBO Max">
+            <span>HBO Max</span>
+        </div>
+
+        <div class="service-item">
+            <img src="/disney_logo_march_2024_050fef2e.jpg" alt="Disney+">
+            <span>Disney+</span>
+        </div>
+
+        <div class="service-item">
+            <img src="/prime-logo-rgb-prime-blue-master.png" alt="Prime Video">
+            <span>Prime Video</span>
+        </div>
+
+        <div class="service-item">
+            <img src="/skyshowtime.jpg" alt="SkyShowtime">
+            <span>SkyShowtime</span>
+        </div>
+
     </div>
 
-    <style>
-        .movie-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-        }
-        .movie-card {
-            background: #1f1f1f;
-            border-radius: 4px;
-            overflow: hidden;
-            transition: transform 0.3s;
-            position: relative;
-        }
-        .movie-card img {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-        }
-        .poster-container {
-            position: relative;
-        }
-        .heart {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 24px;
-            cursor: pointer;
-            transition: transform 0.2s;
-            user-select: none;
-        }
-        .heart:hover { transform: scale(1.2); }
-        .heart.favorited::after {
-            content: '❤️';
-        }
-        .heart.not-favorited::after {
-            content: '🤍';
-        }
-        .movie-info { padding: 10px; }
-        .movie-info h3 { margin: 0 0 10px 0; font-size: 1.1rem; }
-        .movie-info p { font-size: 0.8rem; color: #aaa; }
-        .btn-watch {
-            display: block;
-            background-color: #e50914;
-            color: white;
-            text-align: center;
-            padding: 5px;
-            text-decoration: none;
-            border-radius: 2px;
-            margin-top: 10px;
-        }
+<style>
+.home-wrapper {
+    text-align: center;
+    padding-top: 60px;
+}
 
-        .search-container {
-            width: 100%;
-            max-width: 750px;
-            text-align: center;
-            margin: 0 auto 25px;
-        }
-        .search-form {
-            flex-grow: 1;
-            width: 100%;
-            margin: 0 20px;
-            display: flex;
-        }
-        .search-input {
-            width: 100%;
-            padding: 8px 15px;
-            background-color: #000;
-            border: 1px solid #ccc;
-            color: white;
-            font-size: 14px;
-            border-radius: 0;
-        }
-        .search-input:focus { outline: 1px solid white; }
-        .search-btn {
-            background-color: #333;
-            border: 1px solid #ccc;
-            border-left: none;
-            color: white;
-            cursor: pointer;
-            padding: 0 15px;
-        }
-        .search-btn:hover { background-color: #555; }
+.home-title {
+    font-size: 32px;
+    margin-bottom: 25px;
+    font-weight: bold;
+}
 
-        .not-found { color: #ccc; text-align: center; }
-    </style>
+.search-form {
+    width: 50%;
+    margin: 0 auto;
+    display: flex;
+}
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const hearts = document.querySelectorAll('.heart');
+.search-input {
+    width: 100%;
+    padding: 12px;
+    background: #000;
+    border: 1px solid #555;
+    color: white;
+    font-size: 16px;
+}
 
-            function getFavorites() {
-                return JSON.parse(localStorage.getItem('favorites') || '[]');
-            }
+.search-btn {
+    width: 60px;
+    background: #333;
+    border: 1px solid #555;
+    border-left: none;
+    color: white;
+    cursor: pointer;
+}
 
-            function saveFavorites(favs) {
-                localStorage.setItem('favorites', JSON.stringify(favs));
-            }
+.search-btn:hover { background: #555; }
 
-            function toggleFavorite(id, heart) {
-                let favs = getFavorites();
-                if (favs.includes(id)) {
-                    favs = favs.filter(f => f !== id);
-                    heart.classList.remove('favorited');
-                    heart.classList.add('not-favorited');
-                } else {
-                    favs.push(id);
-                    heart.classList.add('favorited');
-                    heart.classList.remove('not-favorited');
-                }
-                saveFavorites(favs);
-            }
+.service-label {
+    margin-top: 15px;
+    color: #ccc;
+    font-size: 16px;
+    text-align: center;
+}
 
-            hearts.forEach(heart => {
-                const movieId = heart.dataset.id;
-                const favs = getFavorites();
-                if (favs.includes(movieId)) {
-                    heart.classList.add('favorited');
-                } else {
-                    heart.classList.add('not-favorited');
-                }
+.service-icons {
+    display: flex;
+    justify-content: center;
+    gap: 35px;
+    margin-top: 20px;
+}
 
-                heart.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    toggleFavorite(movieId, heart);
-                });
-            });
-        });
-    </script>
+.service-item {
+    pointer-events: none; /* NIEKLlIKALNE */
+}
+
+.service-icons img {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    filter: brightness(1.1);
+    transition: transform .2s;
+    cursor: default !important; /* brak rączki */
+}
+
+.service-icons img:hover {
+    transform: scale(1.15);
+}
+</style>
+
 
 {% endblock %}
