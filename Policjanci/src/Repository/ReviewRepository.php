@@ -16,7 +16,18 @@ class ReviewRepository extends ServiceEntityRepository
         parent::__construct($registry, Review::class);
     }
 
-    public function addReviewTransactional(Movie $movie, Review $review): void
+    public function findCommentsByMovie(Movie $movie): array
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.movie = :movie')
+            ->setParameter('movie', $movie)
+            ->andWhere('r.comment IS NOT NULL')
+            ->orderBy('r.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function addReview(Movie $movie, Review $review): void
     {
         $em = $this->getEntityManager();
 

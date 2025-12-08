@@ -39,22 +39,51 @@
             margin-right: 10px;
             border-radius: 4px;
         }
-        .comment-box input,
-        .comment-box textarea {
-            width: 100%;
-            margin-bottom: 10px;
+        .comment-box {
             background: #111;
-            border: 1px solid #444;
-            padding: 8px;
-            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
         }
-        .comment-box button {
+
+        .comment-box .form-group {
+            margin-bottom: 15px;
+        }
+
+        .comment-box .form-control {
+            width: 100%;
+            padding: 8px;
+            background: #222;
+            border: 1px solid #444;
+            border-radius: 4px;
+            color: #fff;
+        }
+
+        .comment-box .radio-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .comment-box .radio-group label {
+            color: #fff;
+            font-weight: normal;
+        }
+
+        .comment-box .btn-submit {
             background: #e50914;
-            color: white;
-            padding: 8px 14px;
+            color: #fff;
+            padding: 8px 16px;
             border: none;
             cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.2s;
         }
+
+        .comment-box .btn-submit:hover {
+            background: #b0060f;
+        }
+
 
         /* Style for platforms */
         .services-row {
@@ -142,131 +171,65 @@
                 </div>
             {% endif %}
 
-            <h3>Comments</h3>
+            <h3>Reviews</h3>
+
+            <h3>Leave a review</h3>
             <div class="comment-box">
-                <input type="text" id="comment-author" placeholder="Nickname">
-                <textarea id="comment-text" placeholder="Comment text..."></textarea>
-                <button onclick="addComment({{ movie.id }})">Add comment</button>
+                {{ form_start(reviewForm) }}
+                <div class="form-group">
+                    {{ form_label(reviewForm.author) }}
+                    {{ form_widget(reviewForm.author, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(reviewForm.author) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(reviewForm.comment) }}
+                    {{ form_widget(reviewForm.comment, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(reviewForm.comment) }}
+                </div>
+
+                <div class="form-group radio-group">
+                    {{ form_label(reviewForm.positive) }}
+                    {{ form_widget(reviewForm.positive) }}
+                    {{ form_errors(reviewForm.positive) }}
+                </div>
+
+                <button type="submit" class="btn-submit">Add comment</button>
+                {{ form_end(reviewForm) }}
             </div>
 
             <div id="comments-list" class="comments-section">
-                <p id="no-comments">No comments.</p>
+                {% if reviews is empty %}
+                    <p id="no-comments">No reviews yet</p>
+                {% else %}
+                    {% for r in reviews %}
+                        <div class="single-comment">
+                            <div>
+                                {% if r.username %}
+                                    <strong>{{r.username}}</strong>
+                                {% else %}
+                                    <i>anonymous</i>
+                                {% endif %}
+                                {% if r.isPositive %}
+                                    👍
+                                {% else %}
+                                    👎
+                                {% endif %}
+                            </div>
+                            <div>
+                                {{r.comment}}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
             </div>
-
         </div>
     </div>
 
 {% endblock %}
 
-
 {% block scripts %}
     {{ parent() }}
-
-    <script>
-        function addLike(movieId) {
-
-            const key = "likes_" + movieId;
-            const pressedKey = key + "_pressed";
-
-            // Get current value
-            let current = parseInt(localStorage.getItem(key) || "0");
-
-            // If already clicked — block additional likes
-            if (localStorage.getItem(pressedKey)) {
-                return;
-            }
-
-            current++;
-            localStorage.setItem(key, current);
-            localStorage.setItem(pressedKey, "1");
-
-            document.getElementById("likes-" + movieId).textContent = current;
-        }
-
-        // Set like counter after page load
-        document.addEventListener("DOMContentLoaded", () => {
-            const movieId = {{ movie.id }};
-            const key = "likes_" + movieId;
-
-            let current = localStorage.getItem(key) || 0;
-
-            document.getElementById("likes-" + movieId).textContent = current;
-        });
-    </script>
-
-    <script>
-        // Comments
-
-        // 🔄 Load comments when entering page
-        document.addEventListener("DOMContentLoaded", () => {
-            loadComments({{ movie.id }});
-        });
-
-
-        // 📌 Add a comment
-        function addComment(movieId) {
-            const author = document.getElementById("comment-author").value.trim();
-            const text = document.getElementById("comment-text").value.trim();
-
-            if (!author || !text) {
-                alert("Enter a nickname and a comment.");
-                return;
-            }
-
-            const key = "comments_" + movieId;
-            const comments = JSON.parse(localStorage.getItem(key) || "[]");
-
-            const newComment = { author, text };
-            comments.push(newComment);
-            localStorage.setItem(key, JSON.stringify(comments));
-
-            // 🔥 Hide "No comments"
-            document.getElementById("no-comments").style.display = "none";
-
-            // 🔥 Add the comment instantly
-            const list = document.getElementById("comments-list");
-
-            const div = document.createElement("div");
-            div.className = "single-comment";
-            div.innerHTML = `
-    <strong>${newComment.author}</strong><br>
-    ${newComment.text}
-`;
-
-            list.appendChild(div);
-
-            // Clear fields
-            document.getElementById("comment-author").value = "";
-            document.getElementById("comment-text").value = "";
-        }
-
-
-        // 📌 Load comments on refresh
-        function loadComments(movieId) {
-            const key = "comments_" + movieId;
-            const comments = JSON.parse(localStorage.getItem(key) || "[]");
-
-            const list = document.getElementById("comments-list");
-
-            if (comments.length === 0) {
-                document.getElementById("no-comments").style.display = "block";
-                return;
-            }
-
-            document.getElementById("no-comments").style.display = "none";
-
-            comments.forEach(c => {
-                const div = document.createElement("div");
-                div.className = "single-comment";
-                div.innerHTML = `
-        <strong>${c.author}</strong><br>
-        ${c.text}
-    `;
-                list.appendChild(div);
-            });
-        }
-
-    </script>
 
     <script type="text/javascript" src="{{ asset('scripts/favorites.js') }}"
 {% endblock %}
