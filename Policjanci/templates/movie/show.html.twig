@@ -2,82 +2,9 @@
 
 {% block title %}{{ movie.title }} – PlusFlix{% endblock %}
 
-{% block body %}
-    <div class="movie-page">
-
-        <div class="movie-left">
-            <img src="{{ movie.image ?? 'https://placehold.co/300x450' }}" class="movie-cover">
-
-            <div class="heart" data-id="{{ movie.id }}"></div>
-
-            <div class="rating-box">
-                <strong>Rating {{ movie.score ?? '0' }}%</strong>
-
-                <div class="like-icon" onclick="addLike({{ movie.id }})">
-                    👍
-                </div>
-
-                <span class="like-count" id="likes-{{ movie.id }}">0</span>
-            </div>
-        </div>
-
-
-        <div class="movie-right">
-
-            <h1>{{ movie.title }}</h1>
-
-            <div class="movie-meta">
-                Year of production: {{ movie.releaseYear }} |
-                Genre:
-                {% for cat in movie.categories %}
-                    {{ cat.name }}{% if not loop.last %}, {% endif %}
-                {% endfor %}
-            </div>
-
-            <hr>
-
-            <h3>Description</h3>
-            <p>{{ movie.description ?? 'No description.' }}</p>
-
-            <h3>Production</h3>
-            <p>{{ movie.country ?? 'No data' }}</p>
-
-            <h3>Where to watch?</h3>
-
-            {% if movie.services is empty %}
-                <p>No information about available platforms.</p>
-            {% else %}
-                <div class="services-row">
-                    {% for s in movie.services %}
-                        <div class="service-item">
-                            <img src="{{ asset(s.logoPath) }}" alt="{{ s.fullName }}" class="service-logo">
-
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-
-
-
-            {% if movie.isSeries %}
-                <h3>Episode list</h3>
-                <p>No information about episodes.</p>
-            {% endif %}
-
-            <h3>Comments</h3>
-            <div class="comment-box">
-                <input type="text" id="comment-author" placeholder="Nickname">
-                <textarea id="comment-text" placeholder="Comment text..."></textarea>
-                <button onclick="addComment({{ movie.id }})">Add comment</button>
-            </div>
-
-            <div id="comments-list" class="comments-section">
-                <p id="no-comments">No comments.</p>
-            </div>
-
-        </div>
-    </div>
-
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/heart.css') }}">
     <style>
         .movie-page {
             display: flex;
@@ -86,6 +13,7 @@
         }
         .movie-left {
             width: 300px;
+            position: relative;
         }
         .movie-cover {
             width: 100%;
@@ -155,26 +83,84 @@
         }
 
     </style>
+{% endblock %}
 
-    <style>
-        .movie-left {
-            position: relative;
-        }
+{% block body %}
 
-        .heart {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 30px;
-            cursor: pointer;
-            user-select: none;
-            z-index: 10;
-        }
+    <div class="movie-page">
 
-        .heart.favorited::after { content: '❤️'; }
-        .heart.not-favorited::after { content: '🤍'; }
-    </style>
+        <div class="movie-left">
+            <img src="{{ movie.image ?? 'https://placehold.co/300x450' }}" class="movie-cover">
 
+            <div class="heart" data-id="{{ movie.id }}">
+                {% include 'icons/heart.svg' %}
+            </div>
+
+            <div class="rating-box">
+                <strong>Rating {{ movie.score ?? '0' }}%</strong>
+
+                <div class="like-icon" onclick="addLike({{ movie.id }})">
+                    👍
+                </div>
+
+                <span class="like-count" id="likes-{{ movie.id }}">0</span>
+            </div>
+        </div>
+
+        <div class="movie-right">
+
+            <h1>{{ movie.title }}</h1>
+
+            <div class="movie-meta">
+                Year of production: {{ movie.releaseYear }} |
+                Genre:
+                {% for cat in movie.categories %}
+                    {{ cat.name }}{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </div>
+
+            <hr>
+
+            <h3>Description</h3>
+            <p>{{ movie.description ?? 'No description.' }}</p>
+
+            <h3>Production</h3>
+            <p>{{ movie.country ?? 'No data' }}</p>
+
+            <h3>Where to watch?</h3>
+
+            {% if movie.services is empty %}
+                <p>No information about available platforms.</p>
+            {% else %}
+                <div class="services-row">
+                    {% for s in movie.services %}
+                        <div class="service-item">
+                            <img src="{{ asset(s.logoPath) }}" alt="{{ s.fullName }}" class="service-logo">
+
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <h3>Comments</h3>
+            <div class="comment-box">
+                <input type="text" id="comment-author" placeholder="Nickname">
+                <textarea id="comment-text" placeholder="Comment text..."></textarea>
+                <button onclick="addComment({{ movie.id }})">Add comment</button>
+            </div>
+
+            <div id="comments-list" class="comments-section">
+                <p id="no-comments">No comments.</p>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block scripts %}
+    {{ parent() }}
 
     <script>
         function addLike(movieId) {
@@ -207,7 +193,6 @@
             document.getElementById("likes-" + movieId).textContent = current;
         });
     </script>
-
 
     <script>
         // Comments
@@ -244,9 +229,9 @@
             const div = document.createElement("div");
             div.className = "single-comment";
             div.innerHTML = `
-        <strong>${newComment.author}</strong><br>
-        ${newComment.text}
-    `;
+    <strong>${newComment.author}</strong><br>
+    ${newComment.text}
+`;
 
             list.appendChild(div);
 
@@ -274,56 +259,14 @@
                 const div = document.createElement("div");
                 div.className = "single-comment";
                 div.innerHTML = `
-            <strong>${c.author}</strong><br>
-            ${c.text}
-        `;
+        <strong>${c.author}</strong><br>
+        ${c.text}
+    `;
                 list.appendChild(div);
             });
         }
 
     </script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-
-            const heart = document.querySelector('.heart');
-            const movieId = heart.dataset.id;
-
-            function getFavorites() {
-                return JSON.parse(localStorage.getItem('favorites') || '[]');
-            }
-
-            function saveFavorites(favs) {
-                localStorage.setItem('favorites', JSON.stringify(favs));
-            }
-
-            // Initialize state
-            let favs = getFavorites();
-            if (favs.includes(movieId)) {
-                heart.classList.add('favorited');
-            } else {
-                heart.classList.add('not-favorited');
-            }
-
-            // Toggle
-            heart.addEventListener('click', () => {
-                let favs = getFavorites();
-
-                if (favs.includes(movieId)) {
-                    favs = favs.filter(id => id !== movieId);
-                    heart.classList.remove('favorited');
-                    heart.classList.add('not-favorited');
-                } else {
-                    favs.push(movieId);
-                    heart.classList.add('favorited');
-                    heart.classList.remove('not-favorited');
-                }
-
-                saveFavorites(favs);
-            });
-
-        });
-    </script>
-
-
+    <script type="text/javascript" src="{{ asset('scripts/favorites.js') }}"
 {% endblock %}
