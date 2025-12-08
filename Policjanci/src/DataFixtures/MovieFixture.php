@@ -12,7 +12,7 @@ class MovieFixture extends Fixture
     {
         $movies = [
             // title, description, year, poster, isAdult, country, isSeries
-            ['The Human Centipede', 'A mad scientist surgically joins people together.', 2009, "/img/posters/human_centipide.png", true, 'Netherlands', false],
+            ['The Human Centipede', 'A mad scientist surgically joins people together.', 2009, "/img/posters/human_centipede.png", true, 'Netherlands', false],
             ['Breaking Bad', 'A chemistry teacher turns to making drugs after cancer diagnosis.', 2008, "/img/posters/breaking_bad.png", false, 'USA', true],
             ['Better Call Saul', 'The story of Jimmy McGill becoming Saul Goodman.', 2015, "/img/posters/better_call_saul.png", false, 'USA', true],
             ['Inception', 'A skilled thief enters dreams to steal secrets.', 2010, "/img/posters/inception.png", false, 'USA', false],

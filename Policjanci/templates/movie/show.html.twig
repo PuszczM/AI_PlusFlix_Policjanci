@@ -90,7 +90,7 @@
     <div class="movie-page">
 
         <div class="movie-left">
-            <img src="{{ movie.image ?? 'https://placehold.co/300x450' }}" class="movie-cover">
+            <img src="{{ movie.posterPath ?? 'https://placehold.co/300x450' }}" class="movie-cover">
 
             <div class="heart" data-id="{{ movie.id }}">
                 {% include 'icons/heart.svg' %}

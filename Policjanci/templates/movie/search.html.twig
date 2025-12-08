@@ -264,7 +264,7 @@
 
                     <div class="poster-wrapper">
                         <a href="{{ path('movie_show', {'id': movie.id}) }}" class="movie-link">
-                            <img src="{{ movie.image ?? 'https://placehold.co/300x450' }}" alt="">
+                            <img src="{{ movie.posterPath ?? 'https://placehold.co/300x450' }}" alt="">
                         </a>
 
                         <div class="heart" data-id="{{ movie.id }}">
