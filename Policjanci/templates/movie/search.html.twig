@@ -275,8 +275,14 @@
                     <div class="movie-title">{{ movie.title }}</div>
 
                     <div class="like-bar">
-                        <span class="like-btn" data-id="{{ movie.id }}">👍</span>
-                        <span class="like-count" id="likes-{{ movie.id }}">{{ movie.likes ?? 0 }}</span>
+                        <span class="like-btn">👍</span>
+                        <span class="like-count">
+                            {% if movie.allReviewsCount > 0 %}
+                                {{ (movie.positiveReviewsCount / movie.allReviewsCount * 100) | round }}%
+                            {% else %}
+                                0%
+                            {% endif %}
+                        </span>
                     </div>
 
                 </div>
@@ -292,42 +298,6 @@
 
 {% block scripts %}
     {{ parent() }}
-
-    <!-- LIKE BUTTON – SKRYPT -->
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-
-            document.querySelectorAll(".like-btn").forEach(btn => {
-                const movieId = btn.dataset.id;
-                const key = "likes_" + movieId;
-
-                // Wczytaj z localStorage
-                let count = localStorage.getItem(key) || 0;
-                let liked = localStorage.getItem(key + "_pressed");
-
-                document.getElementById("likes-" + movieId).textContent = count;
-
-                if (liked) btn.classList.add("liked");
-
-                // Kliknięcie łapki — NIE OTWIERA LINKA
-                btn.addEventListener("click", (event) => {
-                    event.stopPropagation();
-                    event.preventDefault();
-
-                    if (btn.classList.contains("liked")) return;
-
-                    count++;
-                    localStorage.setItem(key, count);
-                    localStorage.setItem(key + "_pressed", true);
-
-                    btn.classList.add("liked");
-                    document.getElementById("likes-" + movieId).textContent = count;
-                });
-
-            });
-
-        });
-    </script>
 
     <script type="text/javascript" src="{{ asset('scripts/favorites.js') }}"
 {% endblock %}
