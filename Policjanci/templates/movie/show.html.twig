@@ -8,6 +8,8 @@
         <div class="movie-left">
             <img src="{{ movie.image ?? 'https://placehold.co/300x450' }}" class="movie-cover">
 
+            <div class="heart" data-id="{{ movie.id }}"></div>
+
             <div class="rating-box">
                 <strong>Rating {{ movie.score ?? '0' }}%</strong>
 
@@ -17,8 +19,8 @@
 
                 <span class="like-count" id="likes-{{ movie.id }}">0</span>
             </div>
-
         </div>
+
 
         <div class="movie-right">
 
@@ -154,6 +156,26 @@
 
     </style>
 
+    <style>
+        .movie-left {
+            position: relative;
+        }
+
+        .heart {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 30px;
+            cursor: pointer;
+            user-select: none;
+            z-index: 10;
+        }
+
+        .heart.favorited::after { content: '❤️'; }
+        .heart.not-favorited::after { content: '🤍'; }
+    </style>
+
+
     <script>
         function addLike(movieId) {
 
@@ -259,6 +281,48 @@
             });
         }
 
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const heart = document.querySelector('.heart');
+            const movieId = heart.dataset.id;
+
+            function getFavorites() {
+                return JSON.parse(localStorage.getItem('favorites') || '[]');
+            }
+
+            function saveFavorites(favs) {
+                localStorage.setItem('favorites', JSON.stringify(favs));
+            }
+
+            // Initialize state
+            let favs = getFavorites();
+            if (favs.includes(movieId)) {
+                heart.classList.add('favorited');
+            } else {
+                heart.classList.add('not-favorited');
+            }
+
+            // Toggle
+            heart.addEventListener('click', () => {
+                let favs = getFavorites();
+
+                if (favs.includes(movieId)) {
+                    favs = favs.filter(id => id !== movieId);
+                    heart.classList.remove('favorited');
+                    heart.classList.add('not-favorited');
+                } else {
+                    favs.push(movieId);
+                    heart.classList.add('favorited');
+                    heart.classList.remove('not-favorited');
+                }
+
+                saveFavorites(favs);
+            });
+
+        });
     </script>
 
 
