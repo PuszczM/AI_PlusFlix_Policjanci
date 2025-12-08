@@ -126,13 +126,21 @@
             </div>
 
             <div class="rating-box">
-                <strong>Rating {{ movie.score ?? '0' }}%</strong>
+                <strong>
+                    Rating
 
-                <div class="like-icon" onclick="addLike({{ movie.id }})">
+                    {% if movie.allReviewsCount > 0 %}
+                        {{ (movie.positiveReviewsCount / movie.allReviewsCount * 100) | round }}%
+                    {% else %}
+                        0%
+                    {% endif %}
+                </strong>
+
+                <div class="like-icon">
                     👍
                 </div>
 
-                <span class="like-count" id="likes-{{ movie.id }}">0</span>
+                <span class="like-count">{{ movie.positiveReviewsCount }} / {{ movie.allReviewsCount }}</span>
             </div>
         </div>
 
