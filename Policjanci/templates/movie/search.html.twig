@@ -17,47 +17,24 @@
 
     <div class="service-icons">
 
-        <div class="service-item">
-            <img src="/apple.png" alt="Apple TV">
-            <span>Apple TV</span>
-        </div>
-
-        <div class="service-item">
-            <img src="/Netflix_Symbol_RGB.png" alt="Netflix">
-            <span>Netflix</span>
-        </div>
-
-        <div class="service-item">
-            <img src="/hbo-max-logo.jpg" alt="HBO Max">
-            <span>HBO Max</span>
-        </div>
-
-        <div class="service-item">
-            <img src="/disney_logo_march_2024_050fef2e.jpg" alt="Disney+">
-            <span>Disney+</span>
-        </div>
-
-        <div class="service-item">
-            <img src="/prime-logo-rgb-prime-blue-master.png" alt="Prime Video">
-            <span>Prime Video</span>
-        </div>
-
-        <div class="service-item">
-            <img src="/skyshowtime.jpg" alt="SkyShowtime">
-            <span>SkyShowtime</span>
-        </div>
+        {% for service in availableServices %}
+            <div class="service-item">
+                <img src="{{ asset(service.logoPath) }}" alt="{{ service.fullName }}">
+                <span>{{ service.fullName }}</span>
+            </div>
+        {% endfor %}
 
     </div>
 
     {# ---- WYBRANE FILTRY ---- #}
-    {% if selectedCategories is not empty 
-        or prompt 
-        or type 
-        or minScore 
-        or maxScore 
-        or yearAfter 
-        or yearBefore 
-        or country 
+    {% if selectedCategories is not empty
+        or prompt
+        or type
+        or minScore
+        or maxScore
+        or yearAfter
+        or yearBefore
+        or country
         or isRated18 is not null %}
 
     <div class="selected-filters">
@@ -128,9 +105,9 @@
 
         {% for category in categories %}
             <label>
-                <input 
-                    type="checkbox" 
-                    name="categories[]" 
+                <input
+                    type="checkbox"
+                    name="categories[]"
                     value="{{ category.name }}"
                     class="cat-check"
                     {% if category.name in selectedCategories %}checked{% endif %}
