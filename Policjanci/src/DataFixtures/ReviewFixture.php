@@ -39,13 +39,42 @@ class ReviewFixture extends Fixture implements DependentFixtureInterface
             ['The Human Centipede', false, 'Woke'],
         ];
 
+        $counters = [];
+
         foreach ($reviews as [$movieName, $isPositive, $comment]) {
+            /** @var Movie $movie */
             $movie = $this->getReference('movie_'.$movieName, Movie::class);
+
+            $id = $movie->getId();
+            if (!isset($counters[$id])) {
+                $counters[$id] = [
+                    'movie' => $movie,
+                    'positive' => 0,
+                    'all' => 0,
+                ];
+            }
+
+            $counters[$id]['all']++;
+            if ($isPositive) {
+                $counters[$id]['positive']++;
+            }
+
             $review = new Review();
             $review->setMovie($movie)
                 ->setIsPositive($isPositive)
                 ->setComment($comment);
+
             $manager->persist($review);
+        }
+
+        foreach ($counters as $data) {
+            /** @var Movie $movie */
+            $movie = $data['movie'];
+            $movie
+                ->setAllReviewsCount($data['all'])
+                ->setPositiveReviewsCount($data['positive']);
+
+            $manager->persist($movie);
         }
 
         $manager->flush();
