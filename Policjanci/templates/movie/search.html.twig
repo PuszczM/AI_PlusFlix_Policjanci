@@ -1,19 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Wyniki wyszukiwania – PlusFlix{% endblock %}
+{% block title %}Search results – PlusFlix{% endblock %}
 
 {% block body %}
 
 <div class="search-page">
 
-    <!-- WYSZUKIWARKA -->
+    <!-- SEARCH -->
     <form action="{{ path('app_search') }}" method="get" class="search-form">
-        <input type="text" name="prompt" placeholder="Wyszukaj..." value="{{ prompt }}" class="search-input">
+        <input type="text" name="prompt" placeholder="Search..." value="{{ prompt }}" class="search-input">
         <button class="search-btn">🔍</button>
     </form>
 
-    <!-- SERWISY -->
-    <div class="service-label">Serwisy + filtry</div>
+    <!-- SERVISES -->
+    <div class="service-label">Services and filters</div>
 
     <div class="service-icons">
 
@@ -26,7 +26,7 @@
 
     </div>
 
-    {# ---- WYBRANE FILTRY ---- #}
+    {# ---- SELECTED FILTERS ---- #}
     {% if selectedCategories is not empty
         or prompt
         or type
@@ -38,70 +38,70 @@
         or isRated18 is not null %}
 
     <div class="selected-filters">
-        <strong>Wybrane filtry:</strong>
+        <strong>Selected filters:</strong>
 
         {% if prompt %}
-            <span class="tag">Szukaj: "{{ prompt }}"</span>
+            <span class="tag">Search: "{{ prompt }}"</span>
         {% endif %}
 
         {% if selectedCategories is not empty %}
-            <span class="tag">Gatunek: {{ selectedCategories|join(', ') }}</span>
+            <span class="tag">Category: {{ selectedCategories|join(', ') }}</span>
         {% endif %}
 
         {% if type %}
-            <span class="tag">Typ: {{ type == 'film' ? 'Film' : 'Serial' }}</span>
+            <span class="tag">Type: {{ type == 'film' ? 'Film' : 'Series' }}</span>
         {% endif %}
 
         {% if yearAfter or yearBefore %}
-            <span class="tag">Rok: {{ yearAfter ?? '?' }} – {{ yearBefore ?? '?' }}</span>
+            <span class="tag">Year: {{ yearAfter ?? '?' }} – {{ yearBefore ?? '?' }}</span>
         {% endif %}
 
         {% if country %}
-            <span class="tag">Kraj: {{ country }}</span>
+            <span class="tag">Country: {{ country }}</span>
         {% endif %}
 
         {% if minScore or maxScore %}
-            <span class="tag">Ocena: {{ minScore ?? 0 }}–{{ maxScore ?? 100 }}</span>
+            <span class="tag">Rating: {{ minScore ?? 0 }}–{{ maxScore ?? 100 }}</span>
         {% endif %}
 
         {% if isRated18 is not null %}
             <span class="tag">18+: {{ isRated18 ? 'Tak' : 'Nie' }}</span>
         {% endif %}
 
-        <a href="{{ path('app_search') }}" class="clear-filters">Wyczyść</a>
+        <a href="{{ path('app_search') }}" class="clear-filters">Clear</a>
     </div>
 
     {% endif %}
 
 
-    {# ---- PRZYCISKI FILTRÓW ---- #}
+    {# ---- FILTER BUTTONS ---- #}
     <div class="filter-bar">
 
-        <a href="{{ path('app_search', app.request.query.all | merge({'type': null})) }}" class="filter-btn">Wszystkie</a>
+        <a href="{{ path('app_search', app.request.query.all | merge({'type': null})) }}" class="filter-btn">All</a>
 
-        <a href="{{ path('app_search', app.request.query.all | merge({'type': 'film'})) }}" class="filter-btn">Filmy</a>
+        <a href="{{ path('app_search', app.request.query.all | merge({'type': 'film'})) }}" class="filter-btn">Films</a>
 
-        <a href="{{ path('app_search', app.request.query.all | merge({'type': 'series'})) }}" class="filter-btn">Seriale</a>
+        <a href="{{ path('app_search', app.request.query.all | merge({'type': 'series'})) }}" class="filter-btn">Series</a>
 
-        <a href="#" onclick="toggleCategoryFilter()" class="filter-btn">Gatunek</a>
+        <a href="#" onclick="toggleCategoryFilter()" class="filter-btn">Category</a>
 
-        <a href="#" onclick="toggleYearFilter()" class="filter-btn">Rok produkcji</a>
+        <a href="#" onclick="toggleYearFilter()" class="filter-btn">Year</a>
 
-        <a href="#" onclick="toggleCountryFilter()" class="filter-btn">Kraj produkcji</a>
+        <a href="#" onclick="toggleCountryFilter()" class="filter-btn">Country</a>
 
-        <a href="#" onclick="toggleScoreFilter()" class="filter-btn">Ocena</a>
+        <a href="#" onclick="toggleScoreFilter()" class="filter-btn">Rating</a>
 
         <a href="{{ path('app_search', app.request.query.all | merge({'isRated18': 1})) }}" class="filter-btn">18+</a>
 
-        <a href="{{ path('app_search') }}" class="filter-btn reset">Resetuj</a>
+        <a href="{{ path('app_search') }}" class="filter-btn reset">Reset</a>
     </div>
 
 
 
 
-    <!-- FILTR: GATUNEK -->
+    <!-- FILTER: CATEGORY -->
     <div id="category-filter-box" class="filter-box hidden">
-        <h3>Wybierz gatunek:</h3>
+        <h3>Select category:</h3>
 
         {% for category in categories %}
             <label>
@@ -116,56 +116,56 @@
             </label><br>
         {% endfor %}
 
-        <button onclick="applyCategoryFilter()" class="btn-filter-apply">Zastosuj</button>
+        <button onclick="applyCategoryFilter()" class="btn-filter-apply">Apply</button>
     </div>
 
-    <!-- FILTR: ROK PRODUKCJI -->
+    <!-- FILTER: YEAR -->
     <div id="year-filter-box" class="filter-box hidden">
 
-        <label>Od roku: <span id="yearAfterValue">1950</span></label>
+        <label>From year: <span id="yearAfterValue">1950</span></label>
         <input type="range" id="yearAfter" name="yearAfter" min="1950" max="2025" value="1950"
                oninput="yearAfterValue.textContent=this.value">
 
-        <label>Do roku: <span id="yearBeforeValue">2025</span></label>
+        <label>To year: <span id="yearBeforeValue">2025</span></label>
         <input type="range" id="yearBefore" name="yearBefore" min="1950" max="2025" value="2025"
                oninput="yearBeforeValue.textContent=this.value">
 
-        <button onclick="applyYearFilter()" class="btn-filter-apply">Zastosuj</button>
+        <button onclick="applyYearFilter()" class="btn-filter-apply">Apply</button>
     </div>
 
 
-    <!-- FILTR: OCENA -->
+    <!-- FILTER: RATING -->
     <div id="score-filter-box" class="filter-box hidden">
 
-        <label>Minimalna ocena: <span id="minScoreValue">0</span>%</label>
+        <label>Min rating: <span id="minScoreValue">0</span>%</label>
         <input type="range" id="minScore" min="0" max="100" value="0"
                oninput="minScoreValue.textContent=this.value">
 
-        <label>Maksymalna ocena: <span id="maxScoreValue">100</span>%</label>
+        <label>Max rating: <span id="maxScoreValue">100</span>%</label>
         <input type="range" id="maxScore" min="0" max="100" value="100"
                oninput="maxScoreValue.textContent=this.value">
 
-        <button onclick="applyScoreFilter()" class="btn-filter-apply">Zastosuj</button>
+        <button onclick="applyScoreFilter()" class="btn-filter-apply">Apply</button>
     </div>
 
 
 
-    <!-- WYNIKI -->
+    <!-- RESULTS -->
 {% if movies is empty %}
-    <div class="not-found">Nic nie znaleziono…</div>
+    <div class="not-found">Could not find anything :(</div>
 {% else %}
 <div class="movies-grid">
 
     {% for movie in movies %}
         <div class="movie-card">
 
-            <!-- LINK — tylko obraz i tytuł -->
+            <!-- LINK -->
             <a href="{{ path('movie_show', {'id': movie.id}) }}" class="movie-link">
                 <img src="{{ movie.image ?? 'https://placehold.co/300x450' }}" alt="">
                 <div class="movie-title">{{ movie.title }}</div>
             </a>
 
-            <!-- ŁAPKA POZA LINKIEM -->
+            <!-- THUMB UNDER LINK -->
             <div class="like-bar">
                 <span class="like-btn" data-id="{{ movie.id }}">👍</span>
                 <span class="like-count" id="likes-{{ movie.id }}">{{ movie.likes ?? 0 }}</span>
@@ -201,7 +201,7 @@
 </style>
 
 
-<!-- STYLE STRONY -->
+<!-- STYLES -->
 <style>
 
 .search-page { padding: 30px; }

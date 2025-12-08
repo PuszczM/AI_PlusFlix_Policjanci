@@ -3,263 +3,263 @@
 {% block title %}{{ movie.title }} – PlusFlix{% endblock %}
 
 {% block body %}
-<div class="movie-page">
+    <div class="movie-page">
 
-    <div class="movie-left">
-        <img src="{{ movie.image ?? 'https://placehold.co/300x450' }}" class="movie-cover">
+        <div class="movie-left">
+            <img src="{{ movie.image ?? 'https://placehold.co/300x450' }}" class="movie-cover">
 
-        <div class="rating-box">
-            <strong>Oceny {{ movie.score ?? '0' }}%</strong>
+            <div class="rating-box">
+                <strong>Rating {{ movie.score ?? '0' }}%</strong>
 
-            <div class="like-icon" onclick="addLike({{ movie.id }})">
-                👍
+                <div class="like-icon" onclick="addLike({{ movie.id }})">
+                    👍
+                </div>
+
+                <span class="like-count" id="likes-{{ movie.id }}">0</span>
             </div>
 
-            <span class="like-count" id="likes-{{ movie.id }}">0</span>
         </div>
 
-    </div>
+        <div class="movie-right">
 
-    <div class="movie-right">
+            <h1>{{ movie.title }}</h1>
 
-        <h1>{{ movie.title }}</h1>
-
-        <div class="movie-meta">
-            Rok produkcji: {{ movie.releaseYear }} |
-            Gatunek:
-            {% for cat in movie.categories %}
-                {{ cat.name }}{% if not loop.last %}, {% endif %}
-            {% endfor %}
-        </div>
-
-        <hr>
-
-        <h3>Opis</h3>
-        <p>{{ movie.description ?? 'Brak opisu.' }}</p>
-
-        <h3>Produkcja</h3>
-        <p>{{ movie.country ?? 'Brak danych' }}</p>
-
-        <h3>Gdzie obejrzeć?</h3>
-
-        {% if movie.services is empty %}
-            <p>Brak informacji o dostępnych platformach.</p>
-        {% else %}
-            <div class="services-row">
-                {% for s in movie.services %}
-                    <div class="service-item">
-                        <img src="{{ asset(s.logoPath) }}" alt="{{ s.fullName }}" class="service-logo">
-
-                    </div>
+            <div class="movie-meta">
+                Year of production: {{ movie.releaseYear }} |
+                Genre:
+                {% for cat in movie.categories %}
+                    {{ cat.name }}{% if not loop.last %}, {% endif %}
                 {% endfor %}
             </div>
-        {% endif %}
+
+            <hr>
+
+            <h3>Description</h3>
+            <p>{{ movie.description ?? 'No description.' }}</p>
+
+            <h3>Production</h3>
+            <p>{{ movie.country ?? 'No data' }}</p>
+
+            <h3>Where to watch?</h3>
+
+            {% if movie.services is empty %}
+                <p>No information about available platforms.</p>
+            {% else %}
+                <div class="services-row">
+                    {% for s in movie.services %}
+                        <div class="service-item">
+                            <img src="{{ asset(s.logoPath) }}" alt="{{ s.fullName }}" class="service-logo">
+
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
 
 
 
-        {% if movie.isSeries %}
-            <h3>Lista odcinków</h3>
-            <p>Brak danych o odcinkach.</p>
-        {% endif %}
+            {% if movie.isSeries %}
+                <h3>Episode list</h3>
+                <p>No information about episodes.</p>
+            {% endif %}
 
-        <h3>Komentarze</h3>
-        <div class="comment-box">
-            <input type="text" id="comment-author" placeholder="Pseudonim">
-            <textarea id="comment-text" placeholder="Treść komentarza..."></textarea>
-            <button onclick="addComment({{ movie.id }})">Dodaj komentarz</button>
+            <h3>Comments</h3>
+            <div class="comment-box">
+                <input type="text" id="comment-author" placeholder="Nickname">
+                <textarea id="comment-text" placeholder="Comment text..."></textarea>
+                <button onclick="addComment({{ movie.id }})">Add comment</button>
+            </div>
+
+            <div id="comments-list" class="comments-section">
+                <p id="no-comments">No comments.</p>
+            </div>
+
         </div>
-
-        <div id="comments-list" class="comments-section">
-            <p id="no-comments">Brak komentarzy.</p>
-        </div>
-
     </div>
-</div>
 
-<style>
-.movie-page {
-    display: flex;
-    gap: 40px;
-    padding: 30px;
-}
-.movie-left {
-    width: 300px;
-}
-.movie-cover {
-    width: 100%;
-    border-radius: 6px;
-}
-.rating-box {
-    margin-top: 20px;
-    background: #111;
-    padding: 10px;
-    border-radius: 6px;
-    text-align: center;
-}
-.like-icon {
-    font-size: 28px;
-    cursor: pointer;
-    margin-top: 10px;
-}
-.movie-right {
-    flex-grow: 1;
-}
-.service-logo {
-    width: 50px;
-    margin-right: 10px;
-    border-radius: 4px;
-}
-.comment-box input,
-.comment-box textarea {
-    width: 100%;
-    margin-bottom: 10px;
-    background: #111;
-    border: 1px solid #444;
-    padding: 8px;
-    color: white;
-}
-.comment-box button {
-    background: #e50914;
-    color: white;
-    padding: 8px 14px;
-    border: none;
-    cursor: pointer;
-}
+    <style>
+        .movie-page {
+            display: flex;
+            gap: 40px;
+            padding: 30px;
+        }
+        .movie-left {
+            width: 300px;
+        }
+        .movie-cover {
+            width: 100%;
+            border-radius: 6px;
+        }
+        .rating-box {
+            margin-top: 20px;
+            background: #111;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .like-icon {
+            font-size: 28px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .movie-right {
+            flex-grow: 1;
+        }
+        .service-logo {
+            width: 50px;
+            margin-right: 10px;
+            border-radius: 4px;
+        }
+        .comment-box input,
+        .comment-box textarea {
+            width: 100%;
+            margin-bottom: 10px;
+            background: #111;
+            border: 1px solid #444;
+            padding: 8px;
+            color: white;
+        }
+        .comment-box button {
+            background: #e50914;
+            color: white;
+            padding: 8px 14px;
+            border: none;
+            cursor: pointer;
+        }
 
-// Styl dla splatform
-.services-row {
-    display: flex;
-    gap: 20px;
-    margin: 15px 0;
-    align-items: center;
-}
+        /* Style for platforms */
+        .services-row {
+            display: flex;
+            gap: 20px;
+            margin: 15px 0;
+            align-items: center;
+        }
 
-.service-item {
-    text-align: center;
-    color: #ccc;
-    font-size: 13px;
-}
+        .service-item {
+            text-align: center;
+            color: #ccc;
+            font-size: 13px;
+        }
 
-.service-logo {
-    width: 60px;
-    height: 60px;
-    object-fit: contain;
-    filter: brightness(1.1);
-    transition: transform .2s;
-}
+        .service-logo {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            filter: brightness(1.1);
+            transition: transform .2s;
+        }
 
-.service-logo:hover {
-    transform: scale(1.1);
-}
+        .service-logo:hover {
+            transform: scale(1.1);
+        }
 
-</style>
+    </style>
 
-<script>
-function addLike(movieId) {
+    <script>
+        function addLike(movieId) {
 
-    const key = "likes_" + movieId;
-    const pressedKey = key + "_pressed";
+            const key = "likes_" + movieId;
+            const pressedKey = key + "_pressed";
 
-    // Pobierz obecną liczbę
-    let current = parseInt(localStorage.getItem(key) || "0");
+            // Get current value
+            let current = parseInt(localStorage.getItem(key) || "0");
 
-    // Jeżeli już kliknięto wcześniej — blokujemy drugi lajk
-    if (localStorage.getItem(pressedKey)) {
-        return;
-    }
+            // If already clicked — block additional likes
+            if (localStorage.getItem(pressedKey)) {
+                return;
+            }
 
-    current++;
-    localStorage.setItem(key, current);
-    localStorage.setItem(pressedKey, "1");
+            current++;
+            localStorage.setItem(key, current);
+            localStorage.setItem(pressedKey, "1");
 
-    document.getElementById("likes-" + movieId).textContent = current;
-}
+            document.getElementById("likes-" + movieId).textContent = current;
+        }
 
-// Po załadowaniu strony ustaw licznik
-document.addEventListener("DOMContentLoaded", () => {
-    const movieId = {{ movie.id }};
-    const key = "likes_" + movieId;
+        // Set like counter after page load
+        document.addEventListener("DOMContentLoaded", () => {
+            const movieId = {{ movie.id }};
+            const key = "likes_" + movieId;
 
-    let current = localStorage.getItem(key) || 0;
+            let current = localStorage.getItem(key) || 0;
 
-    document.getElementById("likes-" + movieId).textContent = current;
-});
-</script>
-
-
-<script>
-// Komentarze
-
-// 🔄 ŁADOWANIE KOMENTARZY PO WEJŚCIU NA STRONĘ
-document.addEventListener("DOMContentLoaded", () => {
-    loadComments({{ movie.id }});
-});
+            document.getElementById("likes-" + movieId).textContent = current;
+        });
+    </script>
 
 
-// 📌 FUNKCJA DODAWANIA KOMENTARZA
-function addComment(movieId) {
-    const author = document.getElementById("comment-author").value.trim();
-    const text = document.getElementById("comment-text").value.trim();
+    <script>
+        // Comments
 
-    if (!author || !text) {
-        alert("Wpisz pseudonim i treść komentarza.");
-        return;
-    }
+        // 🔄 Load comments when entering page
+        document.addEventListener("DOMContentLoaded", () => {
+            loadComments({{ movie.id }});
+        });
 
-    const key = "comments_" + movieId;
-    const comments = JSON.parse(localStorage.getItem(key) || "[]");
 
-    const newComment = { author, text };
-    comments.push(newComment);
-    localStorage.setItem(key, JSON.stringify(comments));
+        // 📌 Add a comment
+        function addComment(movieId) {
+            const author = document.getElementById("comment-author").value.trim();
+            const text = document.getElementById("comment-text").value.trim();
 
-    // 🔥 UKRYJ TEKST „Brak komentarzy”
-    document.getElementById("no-comments").style.display = "none";
+            if (!author || !text) {
+                alert("Enter a nickname and a comment.");
+                return;
+            }
 
-    // 🔥 DODAJ KOMENTARZ NATYCHMIAST BEZ ODŚWIEŻANIA
-    const list = document.getElementById("comments-list");
+            const key = "comments_" + movieId;
+            const comments = JSON.parse(localStorage.getItem(key) || "[]");
 
-    const div = document.createElement("div");
-    div.className = "single-comment";
-    div.innerHTML = `
+            const newComment = { author, text };
+            comments.push(newComment);
+            localStorage.setItem(key, JSON.stringify(comments));
+
+            // 🔥 Hide "No comments"
+            document.getElementById("no-comments").style.display = "none";
+
+            // 🔥 Add the comment instantly
+            const list = document.getElementById("comments-list");
+
+            const div = document.createElement("div");
+            div.className = "single-comment";
+            div.innerHTML = `
         <strong>${newComment.author}</strong><br>
         ${newComment.text}
     `;
 
-    list.appendChild(div);
+            list.appendChild(div);
 
-    // Czyszczenie pól
-    document.getElementById("comment-author").value = "";
-    document.getElementById("comment-text").value = "";
-}
+            // Clear fields
+            document.getElementById("comment-author").value = "";
+            document.getElementById("comment-text").value = "";
+        }
 
 
-// 📌 FUNKCJA ŁADOWANIA KOMENTARZY PRZY ODSWIEŻENIU
-function loadComments(movieId) {
-    const key = "comments_" + movieId;
-    const comments = JSON.parse(localStorage.getItem(key) || "[]");
+        // 📌 Load comments on refresh
+        function loadComments(movieId) {
+            const key = "comments_" + movieId;
+            const comments = JSON.parse(localStorage.getItem(key) || "[]");
 
-    const list = document.getElementById("comments-list");
+            const list = document.getElementById("comments-list");
 
-    if (comments.length === 0) {
-        document.getElementById("no-comments").style.display = "block";
-        return;
-    }
+            if (comments.length === 0) {
+                document.getElementById("no-comments").style.display = "block";
+                return;
+            }
 
-    document.getElementById("no-comments").style.display = "none";
+            document.getElementById("no-comments").style.display = "none";
 
-    comments.forEach(c => {
-        const div = document.createElement("div");
-        div.className = "single-comment";
-        div.innerHTML = `
+            comments.forEach(c => {
+                const div = document.createElement("div");
+                div.className = "single-comment";
+                div.innerHTML = `
             <strong>${c.author}</strong><br>
             ${c.text}
         `;
-        list.appendChild(div);
-    });
-}
+                list.appendChild(div);
+            });
+        }
 
-</script>
+    </script>
 
 
 {% endblock %}
