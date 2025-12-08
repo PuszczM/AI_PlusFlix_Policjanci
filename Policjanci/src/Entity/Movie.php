@@ -37,6 +37,12 @@ class Movie
     #[ORM\Column(type: "boolean", nullable: true)]
     private bool $isAdult = false;
 
+    #[ORM\Column(type: "integer", nullable: true)]
+    private int $positiveReviewsCount = 0;
+
+    #[ORM\Column(type: "integer", nullable: true)]
+    private int $allReviewsCount = 0;
+
     #[ORM\OneToMany(mappedBy: "movie", targetEntity: "App\Entity\Review", cascade: ["remove"])]
     private Collection $reviews;
 
@@ -188,6 +194,27 @@ class Movie
     public function removeService(Service $service): self
     {
         $this->services->removeElement($service);
+        return $this;
+    }
+    public function getPositiveReviewsCount(): ?int
+    {
+        return $this->positiveReviewsCount;
+    }
+
+    public function getAllReviewsCount(): ?int
+    {
+        return $this->allReviewsCount;
+    }
+
+    public function setPositiveReviewsCount(?int $positiveReviewsCount): self
+    {
+        $this->positiveReviewsCount = $positiveReviewsCount;
+        return $this;
+    }
+
+    public function setAllReviewsCount(?int $allReviewsCount): self
+    {
+        $this->allReviewsCount = $allReviewsCount;
         return $this;
     }
 }
