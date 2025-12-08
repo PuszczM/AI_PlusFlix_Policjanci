@@ -93,30 +93,24 @@ class MovieRepository extends ServiceEntityRepository
         }
     }
 
-    // TODO: cache reviews somewhere to improve performance (e.g. in database as a column)
     private function applyScoreFilter($qb, ?int $minScore, ?int $maxScore): void
     {
-        if ($minScore === null && $maxScore === null) {
-            return;
+        $scoreExpr = '(CASE
+            WHEN m.allReviewsCount IS NULL OR m.allReviewsCount = 0
+                THEN 0
+            WHEN m.positiveReviewsCount IS NULL
+                THEN 0
+            ELSE (m.positiveReviewsCount * 100.0 / m.allReviewsCount)
+        END)';
+
+        if ($minScore !== null) {
+            $qb->andWhere("$scoreExpr >= :minScore")
+                ->setParameter('minScore', $minScore);
         }
-
-        $minScore = $minScore ?? 0;
-        $maxScore = $maxScore ?? 100;
-
-
-        $qb->leftJoin('m.reviews', 'r')
-            ->groupBy('m.id');
-
-        $qb->having('(
-                (SUM(CASE WHEN r.isPositive = 1 THEN 1 ELSE 0 END) * 100.0) /
-                CASE WHEN COUNT(r.id) = 0 THEN 1 ELSE COUNT(r.id) END
-                ) >= :minScore')
-            ->andHaving('(
-                (SUM(CASE WHEN r.isPositive = 1 THEN 1 ELSE 0 END) * 100.0) /
-                CASE WHEN COUNT(r.id) = 0 THEN 1 ELSE COUNT(r.id) END
-                ) <= :maxScore')
-            ->setParameter('minScore', $minScore)
-            ->setParameter('maxScore', $maxScore);
+        if ($maxScore !== null) {
+            $qb->andWhere("$scoreExpr <= :maxScore")
+                ->setParameter('maxScore', $maxScore);
+        }
     }
 
     private function applyTypeFilter($qb, ?MovieTypeFilter $type): void
