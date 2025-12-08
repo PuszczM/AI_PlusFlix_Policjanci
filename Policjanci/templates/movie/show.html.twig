@@ -182,8 +182,8 @@
             <h3>Reviews</h3>
 
             <h3>Leave a review</h3>
-            <div class="comment-box">
-                {{ form_start(reviewForm) }}
+            <div class="comment-box" id="review-form-container" data-movie-id="{{ movie.id }}">
+                {{ form_start(reviewForm, {'attr': {'id': 'review-form'}}) }}
                 <div class="form-group">
                     {{ form_label(reviewForm.author) }}
                     {{ form_widget(reviewForm.author, {'attr': {'class': 'form-control'}}) }}
@@ -238,6 +238,25 @@
 
 {% block scripts %}
     {{ parent() }}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const formContainer = document.getElementById('review-form-container');
+            const form = document.getElementById('review-form');
+            const movieId = formContainer.dataset.movieId;
+
+            const storageKey = 'submittedReview_movie_' + movieId;
+
+            if (localStorage.getItem(storageKey)) {
+                formContainer.style.display = 'none';
+            }
+
+            form.addEventListener('submit', function () {
+                localStorage.setItem(storageKey, 'true');
+                formContainer.style.display = 'none';
+            });
+        });
+    </script>
 
     <script type="text/javascript" src="{{ asset('scripts/favorites.js') }}"
 {% endblock %}
