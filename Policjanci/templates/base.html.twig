@@ -59,12 +59,8 @@
         <a href="#" class="btn quick-btn">🔥 Popular</a>
         <a href="#" class="btn quick-btn">🆕 New</a>
 
-        {% if app.session.get('user_id') %}
-            <span class="user-info">Hello, <strong>{{ app.session.get('username') }}</strong></span>
-
-            {% if 'ROLE_ADMIN' in app.session.get('roles') %}
-                <a href="#" class="btn btn-admin">ADMIN</a>
-            {% endif %}
+        {% if app.user %}
+            <span class="user-info">Hello, <strong>{{ app.user.username }}</strong></span>
 
             <a href="{{ path('app_logout') }}" class="btn btn-logout">Log out</a>
         {% else %}
