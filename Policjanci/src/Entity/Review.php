@@ -22,6 +22,9 @@ class Review
     private bool $isPositive;
 
     #[ORM\Column(type: "text", nullable: true)]
+    private ?string $username = null;
+
+    #[ORM\Column(type: "text", nullable: true)]
     private ?string $comment = null;
 
     #[ORM\Column(type: "datetime_immutable")]
@@ -73,5 +76,16 @@ class Review
     public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
+    }
+
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(?string $username): self
+    {
+        $this->username = $username;
+        return $this;
     }
 }
