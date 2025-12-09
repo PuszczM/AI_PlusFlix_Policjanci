@@ -2,21 +2,85 @@
 
 {% block title %}Add Movie – PlusFlix{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+        .checkbox-inline div,
+        .radio-inline div {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 15px;
+            margin-bottom: 8px;
+        }
+
+        .checkbox-inline label,
+        .radio-inline label {
+            margin-left: 5px;
+            color: #ccc;
+            cursor: pointer;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            background: #000;
+            border: 1px solid #555;
+            color: #eee;
+            border-radius: 4px;
+        }
+
+        button.btn-submit {
+            background: #e50914;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button.btn-submit:hover {
+            background: #b00610;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
 
-    <h1>Add a Movie</h1>
+    <div class="movie-form">
+        {{ form_start(form, {'action': path('admin_add_movie_submit')}) }}
 
-    {{ form_start(form, {
-        action: path('admin_add_movie_submit'),
-        method: 'POST'
-    }) }}
+        {{ form_row(form.title) }}
+        {{ form_row(form.releaseYear) }}
+        {{ form_row(form.description) }}
+        {{ form_row(form.country) }}
 
-    {{ form_widget(form) }}
+        <div class="radio-inline">
+            {{ form_label(form.isSeries) }}
+            {{ form_widget(form.isSeries) }}
+        </div>
 
-    <button type="submit" class="btn btn-primary">
-        Add Movie
-    </button>
+        {{ form_row(form.posterPath) }}
 
-    {{ form_end(form) }}
+        <div class="radio-inline">
+            {{ form_label(form.isAdult) }}
+            {{ form_widget(form.isAdult) }}
+        </div>
+
+        <div class="checkbox-inline">
+            {{ form_label(form.categories) }}
+            {{ form_widget(form.categories) }}
+        </div>
+
+        <div class="checkbox-inline">
+            {{ form_label(form.services) }}
+            {{ form_widget(form.services) }}
+        </div>
+
+        <button type="submit" class="btn-submit">Add Movie</button>
+        {{ form_end(form) }}
+    </div>
 
 {% endblock %}

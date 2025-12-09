@@ -73,4 +73,5 @@ a { text-decoration: none; color: inherit; }
 
 body.has-admin-panel .content-wrapper {
     margin-left: 200px;
+    padding: 5px 20px;
 }
