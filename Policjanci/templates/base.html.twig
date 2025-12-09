@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="{{ asset('styles/base.css') }}">
     {% endblock %}
 </head>
-<body>
+<body class="{% if app.user and 'ROLE_ADMIN' in app.user.roles %}has-admin-panel{% endif %}">
 <nav class="navbar">
     <a href="{{ path('app_home') }}" class="brand">PLUSFLIX</a>
 
@@ -24,6 +24,13 @@
         {% endif %}
     </div>
 </nav>
+
+{% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+    <div class="admin-panel">
+        <a href="{{ path('admin_add_movie') }}" class="admin-btn">➕ Add Movie</a>
+        <a href="{{ path('admin_manage_movies') }}" class="admin-btn">✏️ Edit Movies</a>
+    </div>
+{% endif %}
 
 {% for message in app.flashes('success') %}
     <div style="background: #2e7d32; color: white; padding: 10px; text-align: center;">{{ message }}</div>
