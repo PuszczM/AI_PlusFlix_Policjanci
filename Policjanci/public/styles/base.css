@@ -45,7 +45,6 @@ a { text-decoration: none; color: inherit; }
 
 .admin-panel {
     position: fixed;
-    top: 70px;
     left: 0;
     width: 180px;
     background-color: #000;
