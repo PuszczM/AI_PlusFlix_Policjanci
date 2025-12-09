@@ -18,12 +18,12 @@ class ReviewType extends AbstractType
             ->add('author', TextType::class, [
                 'label' => false,
                 'required' => false,
-                'attr' => ['placeholder' => 'Username', 'maxlength' => 50],
+                'attr' => ['placeholder' => 'Username', 'maxlength' => PostReviewDTO::AUTHOR_SIZE],
             ])
             ->add('comment', TextareaType::class, [
                 'label' => false,
                 'required' => false,
-                'attr' => ['placeholder' => 'Comment text...', 'maxlength' => 250],
+                'attr' => ['placeholder' => 'Comment text...', 'maxlength' => PostReviewDTO::COMMENT_SIZE],
             ])
             ->add('positive', ChoiceType::class, [
                 'label' => 'Did you like it?',

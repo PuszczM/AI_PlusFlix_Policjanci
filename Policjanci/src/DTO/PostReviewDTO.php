@@ -6,14 +6,17 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class PostReviewDTO
 {
+    const AUTHOR_SIZE = 50;
+    const COMMENT_SIZE = 250;
+
     #[Assert\Length(
-        max: 50,
+        max: self::AUTHOR_SIZE,
         maxMessage: 'Username cannot be longer than {{ limit }} characters.'
     )]
     public ?string $author = null;
 
     #[Assert\Length(
-        max: 250,
+        max: self::COMMENT_SIZE,
         maxMessage: 'Comment cannot be longer than {{ limit }} characters.'
     )]
     public ?string $comment = null;
