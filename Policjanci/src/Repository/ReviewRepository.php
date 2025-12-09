@@ -53,4 +53,31 @@ class ReviewRepository extends ServiceEntityRepository
             throw $e;
         }
     }
+
+    public function deleteReview(Review $review): void
+    {
+        $em = $this->getEntityManager();
+        $connection = $em->getConnection();
+        $connection->beginTransaction();
+
+        try {
+            $movie = $review->getMovie();
+
+            // Update movie counters
+            $movie->setAllReviewsCount(max(0, $movie->getAllReviewsCount() - 1));
+            if ($review->isPositive()) {
+                $movie->setPositiveReviewsCount(max(0, $movie->getPositiveReviewsCount() - 1));
+            }
+
+            $em->remove($review);
+            $em->persist($movie);
+
+            $em->flush();
+
+            $connection->commit();
+        } catch (\Exception $e) {
+            $connection->rollBack();
+            throw $e;
+        }
+    }
 }
