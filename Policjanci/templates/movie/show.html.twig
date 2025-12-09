@@ -227,6 +227,14 @@
                             <div>
                                 {{r.comment}}
                             </div>
+
+                            {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+                                <form action="{{ path('delete_review', {'id': r.id}) }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn-delete" style="background:#b0060f;color:white;border:none;padding:2px 6px;border-radius:3px;cursor:pointer;">
+                                        Delete
+                                    </button>
+                                </form>
+                            {% endif %}
                         </div>
                     {% endfor %}
                 {% endif %}

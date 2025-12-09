@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class MovieController extends AbstractController
 {
@@ -57,6 +58,21 @@ class MovieController extends AbstractController
         }
 
         return $this->redirectToRoute('movie_show', ['id' => $movie->getId()]);
+    }
+
+    #[Route('/review/{id}/delete', name: 'delete_review', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function deleteReview(Review $review, ReviewRepository $reviewRepository, Request $request): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $movieId = $review->getMovie()->getId();
+
+        $reviewRepository->deleteReview($review);
+
+        $this->addFlash('success', 'Review deleted successfully.');
+
+        return $this->redirectToRoute('movie_show', ['id' => $movieId]);
     }
 
 }
