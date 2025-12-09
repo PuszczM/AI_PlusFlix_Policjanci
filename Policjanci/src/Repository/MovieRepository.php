@@ -23,6 +23,21 @@ class MovieRepository extends ServiceEntityRepository
         parent::__construct($registry, Movie::class);
     }
 
+    public function add(Movie $movie): void
+    {
+        $em = $this->getEntityManager();
+        $em->beginTransaction();
+
+        try {
+            $em->persist($movie);
+            $em->flush();
+            $em->commit();
+        } catch (\Throwable $e) {
+            $em->rollback();
+            throw $e;
+        }
+    }
+
     public function findMoviesByFilter(MovieFilter $filter): array
     {
         $qb = $this->createQueryBuilder('m');

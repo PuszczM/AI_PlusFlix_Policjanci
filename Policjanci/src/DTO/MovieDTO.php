@@ -2,6 +2,8 @@
 
 namespace App\DTO;
 
+use App\Entity\Category;
+use App\Entity\Service;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class MovieDTO {
@@ -52,13 +54,9 @@ class MovieDTO {
     #[Assert\Type('bool')]
     public bool $isAdult = false;
 
-    #[Assert\All([
-        new Assert\Type('integer')
-    ])]
+    /** @var Category[] */
     public array $categories = [];
 
-    #[Assert\All([
-        new Assert\Type('integer')
-    ])]
+    /** @var Service[] */
     public array $services = [];
 }
