@@ -12,10 +12,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class AddMovieController extends AbstractController
 {
     #[Route('/admin/movies/add', name: 'admin_add_movie', methods: ['GET'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function index(
         CategoryRepository $categoryRepository,
         ServiceRepository  $serviceRepository): Response
@@ -31,6 +33,7 @@ class AddMovieController extends AbstractController
     }
 
     #[Route('/admin/movies/add/submit', name: 'admin_add_movie_submit', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function submit(
         Request $request,
         MovieRepository $movieRepository,
