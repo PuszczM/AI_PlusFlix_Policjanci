@@ -32,11 +32,15 @@
     </div>
 {% endif %}
 
-{% for message in app.flashes('success') %}
-    <div style="background: #2e7d32; color: white; padding: 10px; text-align: center;">{{ message }}</div>
-{% endfor %}
+<div class="content-wrapper">
+    {% for message in app.flashes('success') %}
+        <div style="background: #2e7d32; color: white; padding: 10px; text-align: center;">
+            {{ message }}
+        </div>
+    {% endfor %}
 
-{% block body %}{% endblock %}
+    {% block body %}{% endblock %}
+</div>
 
 {% block scripts %}{% endblock %}
 
