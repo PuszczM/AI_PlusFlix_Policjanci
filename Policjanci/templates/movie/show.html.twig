@@ -247,6 +247,7 @@
 {% block scripts %}
     {{ parent() }}
 
+    <!-- Prevent user from posting more than 1 review -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const formContainer = document.getElementById('review-form-container');
@@ -265,6 +266,24 @@
             });
         });
     </script>
+
+    <!-- Deletion confirmation -->
+    {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const deleteButtons = document.querySelectorAll('.btn-delete');
+
+                deleteButtons.forEach(button => {
+                    button.addEventListener('click', function (event) {
+                        const confirmed = confirm('Are you sure you want to delete this review?');
+                        if (!confirmed) {
+                            event.preventDefault();
+                        }
+                    });
+                });
+            });
+        </script>
+    {% endif %}
 
     <script type="text/javascript" src="{{ asset('scripts/favorites.js') }}"
 {% endblock %}
